@@ -1,0 +1,133 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom base styles */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    @apply text-gray-900 bg-gray-50;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold text-gray-900;
+  }
+  
+  a {
+    @apply transition-colors duration-200;
+  }
+}
+
+/* Custom component styles */
+@layer components {
+  .article-card {
+    @apply bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200;
+  }
+  
+  .btn-primary {
+    @apply bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium;
+  }
+  
+  .btn-secondary {
+    @apply bg-gray-100 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-200 transition-colors duration-200 font-medium;
+  }
+  
+  .perspective-left {
+    @apply border-l-4 border-blue-500 bg-blue-50;
+  }
+  
+  .perspective-right {
+    @apply border-l-4 border-red-500 bg-red-50;
+  }
+  
+  .ai-analysis {
+    @apply border-l-4 border-green-500 bg-green-50;
+  }
+  
+  .news-content {
+    @apply prose prose-gray max-w-none;
+  }
+  
+  .news-content p {
+    @apply mb-4 leading-relaxed;
+  }
+  
+  .news-content h2 {
+    @apply text-xl font-semibold mt-6 mb-3;
+  }
+  
+  .news-content h3 {
+    @apply text-lg font-semibold mt-5 mb-2;
+  }
+  
+  .source-badge {
+    @apply inline-block px-3 py-1 text-xs font-medium rounded-full;
+  }
+  
+  .source-left {
+    @apply bg-blue-100 text-blue-800;
+  }
+  
+  .source-right {
+    @apply bg-red-100 text-red-800;
+  }
+  
+  .source-analysis {
+    @apply bg-green-100 text-green-800;
+  }
+}
+
+/* Custom utility styles */
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  .gradient-hero {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  }
+  
+  .gradient-news {
+    background: linear-gradient(90deg, #f8fafc 0%, #e2e8f0 100%);
+  }
+}
+
+/* Typography improvements */
+.prose {
+  @apply text-gray-700 leading-relaxed;
+}
+
+.prose strong {
+  @apply text-gray-900 font-semibold;
+}
+
+.prose blockquote {
+  @apply border-l-4 border-gray-300 pl-4 italic text-gray-600;
+}
+
+/* Responsive improvements */
+@media (max-width: 640px) {
+  .article-card {
+    @apply rounded-none border-x-0;
+  }
+}
+
+/* Loading states */
+.loading-skeleton {
+  @apply animate-pulse bg-gray-200 rounded;
+}
+
+/* Focus styles for accessibility */
+@layer base {
+  *:focus {
+    @apply outline-none ring-2 ring-blue-500 ring-offset-2;
+  }
+  
+  button:focus,
+  a:focus {
+    @apply outline-none ring-2 ring-blue-500 ring-offset-2;
+  }
+}

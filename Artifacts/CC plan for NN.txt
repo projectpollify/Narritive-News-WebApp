@@ -1,0 +1,96 @@
+My Strategic Plan for Narrative News Project
+
+  Phase 1: Foundation (Day 1-2)
+
+  Goal: Get a working local environment
+
+  1. Project Initialization
+    - Create fresh Next.js 14 project with TypeScript
+    - Copy artifacts into proper directory structure
+    - Merge the two package.json files intelligently
+    - Set up Git with proper .gitignore
+  2. Environment & Config
+    - Create .env.local with ALL variables
+    - Build environment validation schema (using Zod)
+    - Add fallbacks for missing configs
+    - Create development-friendly defaults
+  3. Database Setup
+    - Convert prisma_schema.txt → schema.prisma
+    - Set up local PostgreSQL (or use Supabase free tier)
+    - Run migrations
+    - Test connection with health check
+
+  Phase 2: Core Systems (Day 3-4)
+
+  Goal: Make the dangerous stuff safe
+
+  4. Authentication Layer
+    - Implement NextAuth.js for admin routes
+    - Add middleware to protect /admin/*
+    - Create simple email/password auth (can upgrade later)
+    - Session management
+  5. Job Queue System
+    - Add BullMQ for background jobs
+    - Move AI analysis to queue
+    - Move scraping to queue
+    - Add retry logic and error handling
+  6. API Architecture
+    - Place API routes in /app/api/* structure
+    - Add global error handling
+    - Implement proper rate limiting
+    - Add request validation
+
+  Phase 3: Feature Assembly (Day 5-6)
+
+  Goal: Get features working
+
+  7. Frontend Routes
+    - Set up /app directory pages
+    - Connect components to API routes
+    - Add loading states and error boundaries
+    - Implement client-side data fetching
+  8. Background Services
+    - Set up cron jobs properly
+    - Test automation pipeline
+    - Add monitoring for failed jobs
+    - Implement graceful shutdowns
+
+  Phase 4: Production Ready (Day 7)
+
+  Goal: Deployable and maintainable
+
+  9. Deployment Prep
+    - Docker setup that actually works
+    - CI/CD pipeline (GitHub Actions)
+    - Environment-specific configs
+    - Database backup strategy
+  10. Monitoring & Operations
+    - Error tracking (Sentry)
+    - Logging strategy
+    - Health endpoints
+    - Performance monitoring
+
+  My Recommended Tech Decisions:
+
+  Simplifications to avoid headaches:
+  - Database: Use Supabase (free PostgreSQL + built-in auth)
+  - Queue: Use Vercel's built-in cron + serverless functions (simpler than
+  BullMQ)
+  - Email: SendGrid API instead of SMTP
+  - Auth: Clerk or Supabase Auth (faster than building)
+  - Deployment: Vercel (handles everything automatically)
+
+  Critical Success Factors:
+  1. Start with working demo - Get homepage + 1 API route working first
+  2. Test deployments early - Deploy to Vercel on Day 2, not Day 7
+  3. Use managed services - Don't self-host anything initially
+  4. Progressive enhancement - Basic version first, fancy features later
+  5. Keep artifacts organized - Version control everything
+
+  Immediate Next Steps:
+
+  1. Create the actual Next.js project structure
+  2. Set up environment with sane defaults
+  3. Get one complete flow working (homepage → article → API)
+  4. Deploy that minimal version
+  5. Then add complexity

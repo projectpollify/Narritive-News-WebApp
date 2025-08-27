@@ -1,0 +1,87 @@
+# Narrative News Production Dockerfile
+# Multi-stage build for optimal production image
+
+# ================================
+# Dependencies Stage
+# ================================
+FROM node:18-alpine AS deps
+RUN apk add --no-cache libc6-compat openssl
+
+WORKDIR /app
+
+# Copy package files
+COPY package.json package-lock.json* ./
+
+# Install dependencies
+RUN \
+  if [ -f package-lock.json ]; then npm ci --only=production; \
+  else echo "Lockfile not found." && exit 1; \
+  fi
+
+# ================================
+# Builder Stage
+# ================================
+FROM node:18-alpine AS builder
+RUN apk add --no-cache libc6-compat openssl
+WORKDIR /app
+
+# Copy dependencies
+COPY --from=deps /app/node_modules ./node_modules
+
+# Copy source code
+COPY . .
+
+# Generate Prisma client
+RUN npx prisma generate
+
+# Build application
+ENV NEXT_TELEMETRY_DISABLED 1
+RUN npm run build
+
+# ================================
+# Runner Stage
+# ================================
+FROM node:18-alpine AS runner
+WORKDIR /app
+
+# Create system user
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
+
+# Install runtime dependencies
+RUN apk add --no-cache curl
+
+# Copy runtime files
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/package.json ./package.json
+
+# Copy built application
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+
+# Copy Prisma files
+COPY --from=builder /app/prisma ./prisma
+COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
+COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
+
+# Copy health check script
+COPY --from=builder /app/scripts/health-check.js ./scripts/health-check.js
+
+# Set permissions
+RUN chown -R nextjs:nodejs /app
+USER nextjs
+
+# Environment variables
+ENV NODE_ENV production
+ENV NEXT_TELEMETRY_DISABLED 1
+ENV PORT 3000
+
+# Expose port
+EXPOSE 3000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+  CMD curl -f http://localhost:3000/api/health || exit 1
+
+# Start command
+CMD ["node", "server.js"]

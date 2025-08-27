@@ -1,0 +1,104 @@
+{
+  "name": "narrative-news",
+  "version": "1.0.0",
+  "description": "AI-powered news analysis platform showing multiple perspectives on current events",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "lint:fix": "next lint --fix",
+    "type-check": "tsc --noEmit",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push",
+    "db:migrate": "prisma migrate dev",
+    "db:migrate:deploy": "prisma migrate deploy",
+    "db:seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts",
+    "db:studio": "prisma studio",
+    "db:reset": "prisma migrate reset",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:ci": "jest --ci --coverage --watchAll=false",
+    "analyze": "cross-env ANALYZE=true next build",
+    "export": "next export",
+    "postinstall": "prisma generate",
+    "production:setup": "npm run db:migrate:deploy && npm run db:seed",
+    "health-check": "node scripts/health-check.js",
+    "backup": "node scripts/backup-db.js"
+  },
+  "dependencies": {
+    "next": "^14.0.4",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "@prisma/client": "^5.7.1",
+    "@next/bundle-analyzer": "^14.0.4",
+    "axios": "^1.6.2",
+    "cheerio": "^1.0.0-rc.12",
+    "openai": "^4.20.1",
+    "nodemailer": "^6.9.7",
+    "rss-parser": "^3.13.0",
+    "cron": "^3.1.6",
+    "zod": "^3.22.4",
+    "date-fns": "^2.30.0",
+    "recharts": "^2.8.0",
+    "clsx": "^2.0.0",
+    "tailwind-merge": "^2.2.0",
+    "@headlessui/react": "^1.7.17",
+    "@heroicons/react": "^2.0.18"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.6",
+    "@types/react": "^18.2.46",
+    "@types/react-dom": "^18.2.18",
+    "@types/nodemailer": "^6.4.14",
+    "@types/jest": "^29.5.8",
+    "typescript": "^5.3.3",
+    "prisma": "^5.7.1",
+    "tailwindcss": "^3.4.0",
+    "autoprefixer": "^10.4.16",
+    "postcss": "^8.4.32",
+    "eslint": "^8.56.0",
+    "eslint-config-next": "^14.0.4",
+    "@typescript-eslint/eslint-plugin": "^6.16.0",
+    "@typescript-eslint/parser": "^6.16.0",
+    "prettier": "^3.1.1",
+    "prettier-plugin-tailwindcss": "^0.5.9",
+    "cross-env": "^7.0.3",
+    "ts-node": "^10.9.2",
+    "jest": "^29.7.0",
+    "@testing-library/react": "^14.1.2",
+    "@testing-library/jest-dom": "^6.1.5",
+    "jest-environment-jsdom": "^29.7.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "prisma": {
+    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
+  },
+  "keywords": [
+    "news",
+    "ai",
+    "analysis",
+    "bias",
+    "journalism",
+    "automation",
+    "nextjs",
+    "typescript"
+  ],
+  "author": {
+    "name": "Narrative News",
+    "email": "contact@narrativenews.org"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/narrative-news.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/narrative-news/issues"
+  },
+  "homepage": "https://narrativenews.org"
+}

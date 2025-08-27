@@ -1,0 +1,98 @@
+// SQLite version for easy local development
+// To use: rename this to schema.prisma and set DATABASE_URL="file:./dev.db"
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// Main Articles table - stores our analyzed stories
+model Article {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  aiAnalysis  String
+  category    String
+  tags        String   @default("[]") // JSON string for SQLite
+  publishedAt DateTime
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  viewCount   Int      @default(0)
+  isPublished Boolean  @default(false)
+  
+  // Relationships
+  leftSource  NewsSource @relation("LeftSource", fields: [leftSourceId], references: [id], onDelete: Cascade)
+  rightSource NewsSource @relation("RightSource", fields: [rightSourceId], references: [id], onDelete: Cascade)
+  
+  leftSourceId  String @unique
+  rightSourceId String @unique
+  
+  @@map("articles")
+}
+
+// News Sources - stores original articles from outlets
+model NewsSource {
+  id          String    @id @default(cuid())
+  outlet      String
+  headline    String
+  summary     String
+  fullContent String?
+  url         String    @unique
+  author      String?
+  publishedAt DateTime?
+  bias        String    // Changed from enum for SQLite
+  sourceType  String    // Changed from enum for SQLite
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  
+  // Relationships
+  leftArticle  Article? @relation("LeftSource")
+  rightArticle Article? @relation("RightSource")
+  
+  @@map("news_sources")
+}
+
+// Subscribers for newsletter
+model Subscriber {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String?
+  isActive     Boolean  @default(true)
+  subscribedAt DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  
+  @@map("subscribers")
+}
+
+// RSS Feed Sources
+model RSSFeed {
+  id        String   @id @default(cuid())
+  name      String
+  url       String   @unique
+  outlet    String
+  bias      String   // Changed from enum for SQLite
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@map("rss_feeds")
+}
+
+// Analytics tracking
+model Analytics {
+  id        String   @id @default(cuid())
+  event     String
+  category  String?
+  label     String?
+  value     String?
+  metadata  String?  // JSON string for SQLite
+  createdAt DateTime @default(now())
+  
+  @@index([event])
+  @@index([category])
+  @@map("analytics")
+}
