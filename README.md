@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Narrative News
 
 AI-powered news analysis platform showing multiple perspectives on current events.
@@ -62,3 +63,6 @@ vercel deploy
 ```
 
 See `DEPLOYMENT.md` for detailed deployment instructions.
+=======
+# Narritive-News-WebApp
+>>>>>>> c7a97e9db685f4791f1db49ceb5438bb4182be15
