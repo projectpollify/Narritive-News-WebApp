@@ -1,13 +1,47 @@
-// SQLite version for easy local development
-// To use: rename this to schema.prisma and set DATABASE_URL="file:./dev.db"
+// Production-ready schema supporting both SQLite (dev) and PostgreSQL (production)
+// Use DATABASE_URL env variable to switch between databases
 
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+// Enums for PostgreSQL
+enum BiasType {
+  LEFT
+  CENTER
+  RIGHT
+}
+
+enum SourceType {
+  RSS
+  API
+  MANUAL
+}
+
+enum UserRole {
+  ADMIN
+  EDITOR
+  USER
+}
+
+// User model for authentication
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String?
+  password      String    // Hashed password
+  role          UserRole  @default(USER)
+  isActive      Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  lastLoginAt   DateTime?
+
+  @@map("users")
 }
 
 // Main Articles table - stores our analyzed stories
@@ -15,44 +49,44 @@ model Article {
   id          String   @id @default(cuid())
   title       String
   slug        String   @unique
-  aiAnalysis  String
+  aiAnalysis  String   @db.Text
   category    String
-  tags        String   @default("[]") // JSON string for SQLite
+  tags        Json     @default("[]")
   publishedAt DateTime
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   viewCount   Int      @default(0)
   isPublished Boolean  @default(false)
-  
+
   // Relationships
   leftSource  NewsSource @relation("LeftSource", fields: [leftSourceId], references: [id], onDelete: Cascade)
   rightSource NewsSource @relation("RightSource", fields: [rightSourceId], references: [id], onDelete: Cascade)
-  
+
   leftSourceId  String @unique
   rightSourceId String @unique
-  
+
   @@map("articles")
 }
 
 // News Sources - stores original articles from outlets
 model NewsSource {
-  id          String    @id @default(cuid())
+  id          String     @id @default(cuid())
   outlet      String
   headline    String
-  summary     String
-  fullContent String?
-  url         String    @unique
+  summary     String     @db.Text
+  fullContent String?    @db.Text
+  url         String     @unique
   author      String?
   publishedAt DateTime?
-  bias        String    // Changed from enum for SQLite
-  sourceType  String    // Changed from enum for SQLite
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  
+  bias        BiasType
+  sourceType  SourceType @default(RSS)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
   // Relationships
   leftArticle  Article? @relation("LeftSource")
   rightArticle Article? @relation("RightSource")
-  
+
   @@map("news_sources")
 }
 
@@ -74,11 +108,11 @@ model RSSFeed {
   name      String
   url       String   @unique
   outlet    String
-  bias      String   // Changed from enum for SQLite
+  bias      BiasType
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  
+
   @@map("rss_feeds")
 }
 
@@ -89,9 +123,9 @@ model Analytics {
   category  String?
   label     String?
   value     String?
-  metadata  String?  // JSON string for SQLite
+  metadata  Json?
   createdAt DateTime @default(now())
-  
+
   @@index([event])
   @@index([category])
   @@map("analytics")

@@ -1,0 +1,12 @@
+{
+  "crons": [
+    {
+      "path": "/api/automation/cron",
+      "schedule": "0 */6 * * *"
+    }
+  ],
+  "buildCommand": "npm run build",
+  "devCommand": "npm run dev",
+  "installCommand": "npm install",
+  "framework": "nextjs"
+}

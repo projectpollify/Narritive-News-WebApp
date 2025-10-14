@@ -1,68 +1,241 @@
-<<<<<<< HEAD
 # Narrative News
 
-AI-powered news analysis platform showing multiple perspectives on current events.
+**AI-powered news analysis platform showing multiple perspectives on current events.**
 
-## Quick Start
+Compare how left-leaning and right-leaning news outlets cover the same stories, with AI-powered analysis revealing framing differences and media bias.
 
-1. **Install dependencies:**
-   ```bash
-   npm install
-   ```
+---
 
-2. **Set up environment variables:**
-   - Copy `.env.example` to `.env.local`
-   - Fill in your API keys and database URL
+## 📊 Project Status
 
-3. **Set up database:**
-   ```bash
-   npx prisma generate
-   npx prisma db push
-   npm run db:seed
-   ```
+**Development Status:** ~75% Complete (MVP Functional)
 
-4. **Run development server:**
-   ```bash
-   npm run dev
-   ```
-
-5. **Open browser:**
-   - Main site: http://localhost:3000
-   - Admin panel: http://localhost:3000/admin
-
-## Project Structure
-
-- `/app` - Next.js 14 app directory
-- `/components` - Reusable React components
-- `/lib` - Core business logic and services
-- `/prisma` - Database schema and migrations
-- `/scripts` - Utility scripts
-- `/types` - TypeScript type definitions
-
-## Key Features
-
-- Dual perspective news analysis
-- AI-powered content comparison
-- RSS feed automation
+✅ **Implemented:**
+- RSS feed scraping & content extraction
+- Story matching algorithm (left vs right sources)
+- AI-powered bias analysis (OpenAI GPT-4)
+- Dual perspective article database
+- Admin dashboard framework
 - Newsletter system
-- Admin dashboard
-- Analytics tracking
+- API routes
 
-## Environment Variables Required
+⚠️ **In Progress:**
+- Authentication system
+- Production database migration (SQLite → PostgreSQL)
+- Automated cron scheduling
+- Testing infrastructure
 
-- `DATABASE_URL` - PostgreSQL connection string
-- `OPENAI_API_KEY` - OpenAI API key for content analysis
-- `EMAIL_SERVER_*` - SMTP configuration for newsletters
+📖 **Documentation:** See `/docs` folder for detailed architecture, roadmap, and business plan
 
-## Deployment
+---
 
-This project is configured for easy deployment on Vercel:
+## 🚀 Quick Start
 
+### Prerequisites
+- Node.js 18+
+- npm 8+
+- OpenAI API key
+
+### 1. Install Dependencies
 ```bash
-vercel deploy
+npm install
 ```
 
-See `DEPLOYMENT.md` for detailed deployment instructions.
-=======
-# Narritive-News-WebApp
->>>>>>> c7a97e9db685f4791f1db49ceb5438bb4182be15
+### 2. Environment Setup
+```bash
+# Copy example environment file
+cp .env.example .env.local
+
+# Edit .env.local and add:
+# - DATABASE_URL (default: "file:./dev.db" for SQLite)
+# - OPENAI_API_KEY (get from https://platform.openai.com/api-keys)
+```
+
+### 3. Database Setup
+```bash
+# Generate Prisma client
+npx prisma generate
+
+# Push schema to database
+npx prisma db push
+
+# Seed with sample data
+npm run db:seed
+```
+
+### 4. Run Development Server
+```bash
+npm run dev
+```
+
+### 5. Access Application
+- **Main site:** http://localhost:3000
+- **Admin panel:** http://localhost:3000/admin (⚠️ No auth yet - secure before production!)
+
+---
+
+## 📁 Project Structure
+
+```
+/app                  # Next.js 14 App Router
+  /api               # API routes (articles, AI, automation, admin)
+  /admin             # Admin dashboard pages
+  page.tsx           # Homepage
+  layout.tsx         # Root layout with navigation
+
+/components          # React components
+  /features          # Feature components (article cards, newsletter, etc.)
+
+/lib                 # Core business logic
+  /services         # Service layer
+    ai.ts            # OpenAI GPT-4 integration
+    scraper.ts       # RSS scraping & story matching
+    email.ts         # Newsletter/email service
+    cron.ts          # Automation scheduling
+  /db               # Database service (Prisma)
+  /utils            # Utilities (middleware, rate limiting)
+
+/prisma
+  schema.prisma      # Database schema (SQLite for dev)
+  seed.ts            # Database seeding
+
+/docs                # Project documentation
+  /architecture      # Technical architecture docs
+  /business          # Business plan, metrics, vision
+  /development       # Roadmap, gap analysis
+
+/types               # TypeScript type definitions
+```
+
+---
+
+## 🎯 Key Features
+
+### Implemented ✅
+- **RSS Feed Automation** - Scrapes news from left & right-leaning sources
+- **Story Matching** - Identifies same events covered by different outlets (60% similarity threshold)
+- **AI Analysis** - GPT-4 compares framing, bias, and language differences
+- **Dual Perspective Database** - Each article pairs left + right sources
+- **Newsletter System** - Email subscribers with analysis
+- **Admin Dashboard** - Article management, subscriber management
+- **Analytics** - View tracking, engagement metrics
+
+### Planned 🔄
+- **Authentication** - Secure admin routes
+- **Cron Automation** - Scheduled RSS scraping (every 6 hours)
+- **PostgreSQL Migration** - Production database
+- **Enhanced UI** - Side-by-side article comparison
+- **Testing** - Unit & integration tests
+- **Redis Caching** - Performance optimization
+
+---
+
+## 🛠️ Tech Stack
+
+- **Framework:** Next.js 14 (App Router)
+- **Language:** TypeScript
+- **Database:** SQLite (dev) / PostgreSQL (production)
+- **ORM:** Prisma
+- **AI:** OpenAI GPT-4
+- **Styling:** Tailwind CSS
+- **Scraping:** Cheerio, RSS Parser
+- **Email:** Nodemailer
+- **Scheduling:** node-cron
+- **Deployment:** Vercel (recommended)
+
+---
+
+## 🔧 Environment Variables
+
+### Required
+```bash
+DATABASE_URL="file:./dev.db"              # SQLite for dev
+OPENAI_API_KEY="sk-..."                   # OpenAI API key
+```
+
+### Optional (for full functionality)
+```bash
+# Email (Newsletter)
+EMAIL_SERVER_HOST="smtp.gmail.com"
+EMAIL_SERVER_PORT="587"
+EMAIL_SERVER_USER="your-email@gmail.com"
+EMAIL_SERVER_PASSWORD="your-app-password"
+EMAIL_FROM="noreply@narrativenews.org"
+
+# Next.js
+NEXTAUTH_URL="http://localhost:3000"
+NEXTAUTH_SECRET="your-secret-key"
+
+# Site Config
+SITE_URL="http://localhost:3000"
+ENABLE_AUTOMATION="false"                 # Set to "true" to enable cron
+```
+
+---
+
+## 📚 Documentation
+
+- **[ROADMAP.md](/docs/ROADMAP.md)** - Development roadmap & phases
+- **[CURRENT_ARCHITECTURE.md](/docs/architecture/CURRENT_ARCHITECTURE.md)** - System architecture
+- **[GAP_ANALYSIS.md](/docs/development/GAP_ANALYSIS.md)** - What's missing for production
+- **[BUSINESS_PLAN.md](/docs/business/BUSINESS_PLAN.md)** - Business model & revenue
+- **[Interactive Roadmap](/public/docs/roadmap.html)** - Visual project overview
+
+---
+
+## 🚀 Deployment
+
+### Vercel (Recommended)
+```bash
+# Install Vercel CLI
+npm i -g vercel
+
+# Deploy
+vercel
+```
+
+**Before deploying to production:**
+1. ✅ Set up PostgreSQL database (Vercel Postgres or Supabase)
+2. ✅ Add authentication (see Section 2 docs)
+3. ✅ Configure environment variables in Vercel dashboard
+4. ✅ Update `DATABASE_URL` to PostgreSQL connection string
+5. ✅ Run database migrations: `npx prisma migrate deploy`
+
+---
+
+## 🧪 Testing
+
+```bash
+# Run tests (when implemented)
+npm test
+
+# Type checking
+npm run type-check
+
+# Linting
+npm run lint
+```
+
+---
+
+## 🤝 Contributing
+
+This is currently a solo project. For issues or suggestions, please open an issue.
+
+---
+
+## 📄 License
+
+MIT License - see LICENSE file for details
+
+---
+
+## 🙏 Acknowledgments
+
+- OpenAI for GPT-4 API
+- News outlets for RSS feeds
+- Next.js & Vercel teams
+
+---
+
+**Built with the goal of reducing media polarization and promoting media literacy.** 🌍
