@@ -5,8 +5,14 @@ import { DatabaseService } from '@/lib/db'
 // POST /api/ai-analysis - Generate AI analysis for article pair
 export async function POST(request: NextRequest) {
   try {
-    const { leftArticle, rightArticle, saveToDb = false } = await request.json()
-    
+    const {
+      leftArticle,
+      rightArticle,
+      saveToDb = false,
+      enhanced = true,  // Default to enhanced analysis with W5
+      includeW5 = true  // Include W5 deep-dive sections
+    } = await request.json()
+
     // Validate input
     if (!leftArticle || !rightArticle) {
       return NextResponse.json(
@@ -14,7 +20,7 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       )
     }
-    
+
     // Required fields validation
     const requiredFields = ['title', 'content', 'outlet']
     for (const field of requiredFields) {
@@ -25,11 +31,13 @@ export async function POST(request: NextRequest) {
         )
       }
     }
-    
-    console.log(`🤖 Generating AI analysis for ${leftArticle.outlet} vs ${rightArticle.outlet}`)
-    
-    // Generate analysis
-    const analysis = await AIService.analyzeArticles(leftArticle, rightArticle)
+
+    console.log(`🤖 Generating AI analysis for ${leftArticle.outlet} vs ${rightArticle.outlet} (Enhanced: ${enhanced}, W5: ${includeW5})`)
+
+    // Generate analysis - use enhanced method if requested
+    const analysis = enhanced
+      ? await AIService.analyzeArticlesEnhanced(leftArticle, rightArticle, includeW5)
+      : await AIService.analyzeArticles(leftArticle, rightArticle)
     
     // Optionally save to database
     if (saveToDb) {
@@ -40,7 +48,9 @@ export async function POST(request: NextRequest) {
       const article = await DatabaseService.createArticle({
         title: await AIService.generateHeadline(leftArticle.title, rightArticle.title),
         slug,
-        aiAnalysis: analysis.analysis,
+        aiAnalysis: enhanced
+          ? JSON.stringify(analysis)  // Store full enhanced analysis as JSON
+          : (analysis as any).analysis,  // Legacy: store only analysis text
         category: 'General',
         publishedAt: new Date(),
         leftSource: {

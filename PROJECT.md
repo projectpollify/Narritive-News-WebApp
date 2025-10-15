@@ -1,8 +1,8 @@
 # PROJECT.md - Narrative News Development Guide
 
 **Last Updated:** October 15, 2025
-**Project Status:** ~90% Complete (MVP + Testing + Production Ready + Optimized)
-**Current Phase:** Optimized & Ready to Deploy → Admin Enhancements Optional
+**Project Status:** ~92% Complete (MVP + Testing + Production Ready + Optimized + W5 Feature)
+**Current Phase:** Optimized with W5 Analysis → Ready to Deploy
 
 ---
 
@@ -37,6 +37,7 @@
 - **RSS Feed Automation** - Scrapes news from multiple left & right-leaning sources
 - **Enhanced Story Matching** - NER-based algorithm with 4-factor scoring (70+ point threshold)
 - **AI Bias Analysis** - GPT-4 compares framing, bias, and language differences with structured output
+- **W5 Deep-Dive Analysis** - Optional Who/What/When/Where/Why breakdowns for each key section (NEW!)
 - **Dual Perspective Database** - Each article pairs left + right sources
 - **Newsletter System** - Email subscribers with weekly analysis
 - **Admin Dashboard** - Article management, subscriber management, analytics
@@ -1242,6 +1243,38 @@ npm run db:generate
 - ✅ GitHub Actions CI/CD pipeline
 - ✅ Prettier & ESLint configuration
 - ✅ Build successfully completes with all type checks passing
+
+### Section 4.5: W5 Analysis Feature (COMPLETE)
+**File:** [docs/features/W5_ANALYSIS.md](./docs/features/W5_ANALYSIS.md)
+**Time:** 1.5 hours (actual)
+**Complexity:** MEDIUM
+**Completed:** October 15, 2025
+
+**Tasks:**
+- ✅ Enhanced AI interfaces (W5Analysis, AnalysisSection, EnhancedAIAnalysis)
+- ✅ New `analyzeArticlesEnhanced()` method with W5 deep-dive generation
+- ✅ React component with collapsible W5 sections (enhanced-analysis.tsx)
+- ✅ User preference toggle (localStorage)
+- ✅ Updated API route to support enhanced analysis
+- ✅ Article page integration with W5 display
+- ✅ Comprehensive documentation
+
+**Deliverables:**
+- ✅ Five key analysis sections (What's True, What's Spin, Real Impact, Common Ground, Bigger Picture)
+- ✅ Optional W5 breakdowns (Who, What, When, Where, Why) for each section
+- ✅ Expandable/collapsible UI with smooth animations
+- ✅ Color-coded sections with icons (lucide-react)
+- ✅ User control over depth level
+
+**Key Benefits:**
+- Progressive disclosure - doesn't overwhelm users
+- Educational value - teaches W5 critical thinking
+- SEO boost - 5 sections × 5 W5 points = 25 additional insights per article
+- Differentiation - unique feature in news aggregation space
+
+**See:** [docs/features/W5_ANALYSIS.md](./docs/features/W5_ANALYSIS.md) for complete documentation
+
+---
 
 ### Section 4: Performance Optimizations (COMPLETE)
 **Completed:** October 15, 2025
