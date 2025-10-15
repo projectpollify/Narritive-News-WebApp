@@ -12,6 +12,33 @@ export interface AIAnalysisResult {
   readingTime: number
 }
 
+// Enhanced AI analysis with structured perspectives
+export interface EnhancedAIAnalysis {
+  executiveSummary: string // Neutral 2-3 sentence overview
+  leftPerspective: {
+    keyPoints: string[]
+    framing: string // How they frame the story
+    tone: string // Emotional tone
+    emphasis: string[] // What they emphasize
+  }
+  rightPerspective: {
+    keyPoints: string[]
+    framing: string
+    tone: string
+    emphasis: string[]
+  }
+  keyDifferences: string[]
+  commonGround: string[] // Facts both agree on
+  biasIndicators: {
+    languagePatterns: string[] // Biased language detected
+    omissions: string[] // What each side omits
+    emphasisDifferences: string[] // Different focal points
+  }
+  possibleMotives: string[]
+  confidenceScore: number
+  readingTime: number
+}
+
 export class AIService {
   
   // Main function to analyze two articles
@@ -56,7 +83,11 @@ export class AIService {
       })
       
       const rawResponse = completion.choices[0].message.content
-      
+
+      if (!rawResponse) {
+        throw new Error('No content in AI response')
+      }
+
       // Parse the structured response
       const parsedResult = this.parseAIResponse(rawResponse)
       
@@ -205,9 +236,9 @@ Your analysis should educate readers about media literacy and help them become m
   private static calculateTextSimilarity(text1: string, text2: string): number {
     const words1 = new Set(text1.toLowerCase().split(/\W+/).filter(w => w.length > 3))
     const words2 = new Set(text2.toLowerCase().split(/\W+/).filter(w => w.length > 3))
-    
-    const intersection = new Set([...words1].filter(w => words2.has(w)))
-    const union = new Set([...words1, ...words2])
+
+    const intersection = new Set(Array.from(words1).filter(w => words2.has(w)))
+    const union = new Set([...Array.from(words1), ...Array.from(words2)])
     
     return union.size === 0 ? 0 : intersection.size / union.size
   }
@@ -344,7 +375,8 @@ Your analysis should educate readers about media literacy and help them become m
       return {status: 'healthy', message: 'OpenAI API working correctly'}
       
     } catch (error) {
-      return {status: 'error', message: `OpenAI API error: ${error.message}`}
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+      return {status: 'error', message: `OpenAI API error: ${errorMessage}`}
     }
   }
 }

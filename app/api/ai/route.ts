@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { AIService } from '@/lib/ai'
+import { AIService } from '@/lib/services/ai'
 import { DatabaseService } from '@/lib/db'
 
 // POST /api/ai-analysis - Generate AI analysis for article pair
@@ -80,12 +80,12 @@ export async function POST(request: NextRequest) {
       data: analysis
     })
     
-  } catch (error) {
+  } catch (error: any) {
     console.error('❌ AI analysis API error:', error)
     return NextResponse.json(
       { 
         success: false, 
-        error: error.message,
+        error: error?.message || String(error),
         fallbackAvailable: true
       },
       { status: 500 }
@@ -102,9 +102,9 @@ export async function GET() {
       success: true,
       data: health
     })
-  } catch (error) {
+  } catch (error: any) {
     return NextResponse.json(
-      { success: false, error: error.message },
+      { success: false, error: error?.message || String(error) },
       { status: 500 }
     )
   }
@@ -135,7 +135,7 @@ export async function PUT(request: NextRequest, { params }: { params: { articleI
       },
       {
         title: article.rightSource.headline,
-        content: article.rightSource.fullContent || article.rightSource.summary,
+        content: article.rightSource.fullContent || undefined || article.rightSource.summary,
         outlet: article.rightSource.outlet,
         summary: article.rightSource.summary
       }
@@ -152,20 +152,20 @@ export async function PUT(request: NextRequest, { params }: { params: { articleI
         outlet: article.leftSource.outlet,
         headline: article.leftSource.headline,
         summary: article.leftSource.summary,
-        fullContent: article.leftSource.fullContent,
+        fullContent: article.leftSource.fullContent || undefined,
         url: article.leftSource.url,
-        author: article.leftSource.author,
-        publishedAt: article.leftSource.publishedAt,
+        author: article.leftSource.author || undefined,
+        publishedAt: article.leftSource.publishedAt || undefined,
         bias: article.leftSource.bias as 'LEFT' | 'RIGHT' | 'CENTER'
       },
       rightSource: {
         outlet: article.rightSource.outlet,
         headline: article.rightSource.headline,
         summary: article.rightSource.summary,
-        fullContent: article.rightSource.fullContent,
+        fullContent: article.rightSource.fullContent || undefined,
         url: article.rightSource.url,
-        author: article.rightSource.author,
-        publishedAt: article.rightSource.publishedAt,
+        author: article.rightSource.author || undefined,
+        publishedAt: article.rightSource.publishedAt || undefined,
         bias: article.rightSource.bias as 'LEFT' | 'RIGHT' | 'CENTER'
       }
     })
@@ -179,10 +179,10 @@ export async function PUT(request: NextRequest, { params }: { params: { articleI
       }
     })
     
-  } catch (error) {
+  } catch (error: any) {
     console.error('❌ Analysis regeneration failed:', error)
     return NextResponse.json(
-      { success: false, error: error.message },
+      { success: false, error: error?.message || String(error) },
       { status: 500 }
     )
   }

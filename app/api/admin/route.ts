@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { DatabaseService } from '@/lib/db'
-import { automation } from '@/lib/automation'
-import { AIService } from '@/lib/ai'
-import { EmailService } from '@/lib/email'
+import { automation } from '@/lib/services/cron'
+import { AIService } from '@/lib/services/ai'
+import { EmailService } from '@/lib/services/email'
 
 // GET /api/admin/stats - Get comprehensive system statistics
 export async function GET() {
@@ -62,7 +62,7 @@ export async function GET() {
       data: stats
     })
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('❌ Admin stats error:', error)
     return NextResponse.json(
       { success: false, error: 'Failed to fetch system stats' },
@@ -139,7 +139,7 @@ export async function POST() {
       }
     })
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('❌ Health check error:', error)
     return NextResponse.json(
       { success: false, error: 'Health check failed' },

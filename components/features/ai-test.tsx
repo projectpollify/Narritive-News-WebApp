@@ -17,7 +17,7 @@ export function AITestTool() {
     summary: 'Fed rate cut may reignite inflation concerns'
   })
 
-  const [analysis, setAnalysis] = useState(null)
+  const [analysis, setAnalysis] = useState<any>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
@@ -46,8 +46,8 @@ export function AITestTool() {
       } else {
         setError(data.error || 'Analysis failed')
       }
-    } catch (err) {
-      setError('Network error: ' + err.message)
+    } catch (err: any) {
+      setError('Network error: ' + (err?.message || String(err)))
     } finally {
       setLoading(false)
     }
@@ -58,8 +58,8 @@ export function AITestTool() {
       const response = await fetch('/api/ai-analysis/health')
       const data = await response.json()
       alert(`AI Service Status: ${data.data.status}\n${data.data.message}`)
-    } catch (err) {
-      alert('Health check failed: ' + err.message)
+    } catch (err: any) {
+      alert('Health check failed: ' + (err?.message || String(err)))
     }
   }
 
@@ -203,7 +203,7 @@ export function AITestTool() {
           <div className="mb-6">
             <h4 className="font-medium mb-2">Main Analysis</h4>
             <div className="prose max-w-none">
-              {analysis.analysis.split('\n').map((paragraph, index) => (
+              {analysis.analysis.split('\n').map((paragraph: string, index: number) => (
                 <p key={index} className="mb-3">{paragraph}</p>
               ))}
             </div>
@@ -213,7 +213,7 @@ export function AITestTool() {
             <div>
               <h4 className="font-medium mb-3">Key Differences</h4>
               <ul className="list-disc list-inside space-y-2">
-                {analysis.keyDifferences.map((diff, index) => (
+                {analysis.keyDifferences.map((diff: string, index: number) => (
                   <li key={index} className="text-sm">{diff}</li>
                 ))}
               </ul>
@@ -222,7 +222,7 @@ export function AITestTool() {
             <div>
               <h4 className="font-medium mb-3">Possible Motives</h4>
               <ul className="list-disc list-inside space-y-2">
-                {analysis.possibleMotives.map((motive, index) => (
+                {analysis.possibleMotives.map((motive: string, index: number) => (
                   <li key={index} className="text-sm">{motive}</li>
                 ))}
               </ul>

@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client'
+import { CacheService, CacheKeys } from '@/lib/cache/redis'
 
 // Prevent multiple instances of Prisma Client in development
 const globalForPrisma = globalThis as unknown as {
@@ -10,6 +11,9 @@ export const prisma = globalForPrisma.prisma ?? new PrismaClient({
 })
 
 if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
+
+// Export as 'db' for backwards compatibility
+export const db = prisma
 
 // Database utility functions
 export class DatabaseService {
@@ -43,7 +47,7 @@ export class DatabaseService {
       bias: 'LEFT' | 'RIGHT' | 'CENTER'
     }
   }) {
-    return await prisma.article.create({
+    const article = await prisma.article.create({
       data: {
         title: data.title,
         slug: data.slug,
@@ -54,14 +58,28 @@ export class DatabaseService {
         isPublished: true,
         leftSource: {
           create: {
-            ...data.leftSource,
-            sourceType: 'LEFT'
+            outlet: data.leftSource.outlet,
+            headline: data.leftSource.headline,
+            summary: data.leftSource.summary,
+            fullContent: data.leftSource.fullContent,
+            url: data.leftSource.url,
+            author: data.leftSource.author,
+            publishedAt: data.leftSource.publishedAt,
+            bias: data.leftSource.bias as any,
+            sourceType: 'RSS'
           }
         },
         rightSource: {
           create: {
-            ...data.rightSource,
-            sourceType: 'RIGHT'
+            outlet: data.rightSource.outlet,
+            headline: data.rightSource.headline,
+            summary: data.rightSource.summary,
+            fullContent: data.rightSource.fullContent,
+            url: data.rightSource.url,
+            author: data.rightSource.author,
+            publishedAt: data.rightSource.publishedAt,
+            bias: data.rightSource.bias as any,
+            sourceType: 'RSS'
           }
         }
       },
@@ -70,6 +88,11 @@ export class DatabaseService {
         rightSource: true
       }
     })
+
+    // Invalidate article list caches when new article is created
+    await CacheService.clearPattern('articles:list:*')
+
+    return article
   }
 
   static async getArticles(filters?: {
@@ -79,8 +102,16 @@ export class DatabaseService {
     published?: boolean
   }) {
     const { category, limit = 10, offset = 0, published = true } = filters || {}
-    
-    return await prisma.article.findMany({
+
+    // Try cache first
+    const cacheKey = CacheKeys.articlesList(category, limit, offset)
+    const cached = await CacheService.get(cacheKey)
+    if (cached) {
+      return cached
+    }
+
+    // Query database
+    const articles = await prisma.article.findMany({
       where: {
         ...(category && { category }),
         isPublished: published
@@ -95,9 +126,27 @@ export class DatabaseService {
       take: limit,
       skip: offset
     })
+
+    // Cache for 15 minutes (900 seconds)
+    await CacheService.set(cacheKey, articles, 900)
+
+    return articles
   }
 
   static async getArticleBySlug(slug: string) {
+    // Try cache first
+    const cacheKey = CacheKeys.articleDetail(slug)
+    const cached = await CacheService.get(cacheKey)
+    if (cached) {
+      // Still increment view count even for cached responses
+      await prisma.article.update({
+        where: { id: (cached as any).id },
+        data: { viewCount: { increment: 1 } }
+      })
+      return cached
+    }
+
+    // Query database
     const article = await prisma.article.findUnique({
       where: { slug },
       include: {
@@ -112,6 +161,9 @@ export class DatabaseService {
         where: { id: article.id },
         data: { viewCount: { increment: 1 } }
       })
+
+      // Cache for 1 hour (3600 seconds)
+      await CacheService.set(cacheKey, article, 3600)
     }
 
     return article
@@ -128,25 +180,17 @@ export class DatabaseService {
   }
 
   // Subscriber operations
-  static async addSubscriber(email: string, preferences?: {
-    categories?: string[]
-    frequency?: string
-    timezone?: string
-  }) {
+  static async addSubscriber(email: string, name?: string) {
     try {
       return await prisma.subscriber.create({
         data: {
           email,
-          preferences: {
-            categories: preferences?.categories || ['Politics', 'Business'],
-            frequency: preferences?.frequency || 'daily',
-            timezone: preferences?.timezone || 'UTC'
-          }
+          name
         }
       })
-    } catch (error) {
+    } catch (error: any) {
       // Handle duplicate email
-      if (error.code === 'P2002') {
+      if (error?.code === 'P2002') {
         throw new Error('Email already subscribed')
       }
       throw error
@@ -168,13 +212,18 @@ export class DatabaseService {
 
   // RSS Feed operations
   static async addRSSFeed(data: {
+    name: string
     url: string
     outlet: string
     bias: 'LEFT' | 'RIGHT' | 'CENTER'
-    category?: string
   }) {
     return await prisma.rSSFeed.create({
-      data
+      data: {
+        name: data.name,
+        url: data.url,
+        outlet: data.outlet,
+        bias: data.bias as any
+      }
     })
   }
 
@@ -185,9 +234,11 @@ export class DatabaseService {
   }
 
   static async updateFeedLastChecked(id: string) {
+    // RSSFeed model doesn't have lastChecked field
+    // Update the updatedAt timestamp instead
     return await prisma.rSSFeed.update({
       where: { id },
-      data: { lastChecked: new Date() }
+      data: { updatedAt: new Date() }
     })
   }
 
@@ -260,12 +311,12 @@ export class DatabaseService {
   }
 
   // Reactivate subscriber
-  static async reactivateSubscriber(email: string, preferences?: any) {
+  static async reactivateSubscriber(email: string, name?: string) {
     return await prisma.subscriber.update({
       where: { email },
-      data: { 
+      data: {
         isActive: true,
-        ...(preferences && { preferences })
+        ...(name && { name })
       }
     })
   }
@@ -366,5 +417,95 @@ export class DatabaseService {
     }
 
     return slug
+  }
+
+  // Get comprehensive stats
+  static async getStats() {
+    const [
+      articlesCount,
+      subscribersCount,
+      rssCount,
+      totalViews
+    ] = await Promise.all([
+      prisma.article.count({ where: { isPublished: true } }),
+      prisma.subscriber.count({ where: { isActive: true } }),
+      prisma.rSSFeed.count({ where: { isActive: true } }),
+      prisma.article.aggregate({
+        _sum: { viewCount: true }
+      })
+    ])
+
+    return {
+      articles: articlesCount,
+      subscribers: subscribersCount,
+      rssFeeds: rssCount,
+      totalViews: totalViews._sum.viewCount || 0
+    }
+  }
+
+  // Update subscriber last email timestamp
+  static async updateSubscribersLastEmail(subscriberIds: string[]) {
+    await prisma.subscriber.updateMany({
+      where: {
+        id: { in: subscriberIds }
+      },
+      data: {
+        updatedAt: new Date()
+      }
+    })
+  }
+
+  // Get subscribers list with filtering and pagination
+  static async getSubscribersList(options?: {
+    status?: 'active' | 'inactive' | 'all'
+    limit?: number
+    offset?: number
+    search?: string
+  }) {
+    const { status = 'all', limit = 50, offset = 0, search } = options || {}
+
+    const where: any = {}
+
+    if (status === 'active') {
+      where.isActive = true
+    } else if (status === 'inactive') {
+      where.isActive = false
+    }
+
+    if (search) {
+      where.OR = [
+        { email: { contains: search, mode: 'insensitive' } },
+        { name: { contains: search, mode: 'insensitive' } }
+      ]
+    }
+
+    const [subscribers, total] = await Promise.all([
+      prisma.subscriber.findMany({
+        where,
+        orderBy: { subscribedAt: 'desc' },
+        take: limit,
+        skip: offset
+      }),
+      prisma.subscriber.count({ where })
+    ])
+
+    return {
+      subscribers,
+      total,
+      limit,
+      offset
+    }
+  }
+
+  // Bulk unsubscribe multiple subscribers
+  static async bulkUnsubscribe(subscriberIds: string[]) {
+    return await prisma.subscriber.updateMany({
+      where: {
+        id: { in: subscriberIds }
+      },
+      data: {
+        isActive: false
+      }
+    })
   }
 }

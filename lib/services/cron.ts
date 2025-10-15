@@ -19,16 +19,16 @@ export class AutomationScheduler {
     // News scraping job - runs every 6 hours
     this.newsJob = new CronJob(
       '0 */6 * * *', // At minute 0 past every 6th hour
-      this.runNewsAutomation.bind(this),
+      () => { void this.runNewsAutomation() },
       null,
       true, // Start immediately
       'America/New_York'
     )
-    
+
     // Email newsletter job - runs daily at 8 AM EST
     this.emailJob = new CronJob(
       '0 8 * * *', // At 8:00 AM every day
-      this.runEmailCampaign.bind(this),
+      () => { void this.runEmailCampaign() },
       null,
       true,
       'America/New_York'
@@ -69,8 +69,8 @@ export class AutomationScheduler {
       isRunning: this.isRunning,
       newsJobActive: this.newsJob?.running || false,
       emailJobActive: this.emailJob?.running || false,
-      nextNewsRun: this.newsJob?.nextDate()?.toISOString() || null,
-      nextEmailRun: this.emailJob?.nextDate()?.toISOString() || null
+      nextNewsRun: this.newsJob?.nextDate()?.toString() || null,
+      nextEmailRun: this.emailJob?.nextDate()?.toString() || null
     }
   }
   
@@ -111,11 +111,12 @@ export class AutomationScheduler {
       
     } catch (error) {
       const duration = Date.now() - startTime
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error'
       console.error(`❌ News automation failed after ${duration}ms:`, error)
-      
-      await this.logAutomationRun('news', { success: false, error: error.message }, duration)
-      
-      return { success: false, error: error.message }
+
+      await this.logAutomationRun('news', { success: false, error: errorMessage }, duration)
+
+      return { success: false, error: errorMessage }
     }
   }
   
@@ -143,11 +144,12 @@ export class AutomationScheduler {
       
     } catch (error) {
       const duration = Date.now() - startTime
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error'
       console.error(`❌ Email campaign failed after ${duration}ms:`, error)
-      
-      await this.logAutomationRun('email', { success: false, error: error.message }, duration)
-      
-      return { success: false, error: error.message }
+
+      await this.logAutomationRun('email', { success: false, error: errorMessage }, duration)
+
+      return { success: false, error: errorMessage }
     }
   }
   

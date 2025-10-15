@@ -67,7 +67,7 @@ export async function GET(
       data: transformedArticle
     })
     
-  } catch (error) {
+  } catch (error: any) {
     console.error('❌ Article detail API error:', error)
     return NextResponse.json(
       { success: false, error: 'Failed to fetch article' },
@@ -104,7 +104,7 @@ export async function PATCH(
       data: { slug }
     })
     
-  } catch (error) {
+  } catch (error: any) {
     console.error('❌ Article update error:', error)
     return NextResponse.json(
       { success: false, error: 'Failed to update article' },

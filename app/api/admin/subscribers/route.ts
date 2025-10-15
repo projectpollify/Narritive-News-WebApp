@@ -5,27 +5,31 @@ import { DatabaseService } from '@/lib/db'
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
-    const status = searchParams.get('status') // 'active', 'inactive', 'all'
+    const statusParam = searchParams.get('status')
+    const status = (statusParam === 'active' || statusParam === 'inactive' || statusParam === 'all')
+      ? statusParam
+      : 'all'
     const limit = parseInt(searchParams.get('limit') || '50')
     const offset = parseInt(searchParams.get('offset') || '0')
-    const search = searchParams.get('search')
+    const search = searchParams.get('search') || undefined
 
     // Get subscribers with basic info
-    const subscribers = await DatabaseService.getSubscribersList({
+    const result = await DatabaseService.getSubscribersList({
       status,
       limit,
       offset,
       search
     })
 
+    const subscribers = result.subscribers
+
     // Transform for admin display
     const transformedSubscribers = subscribers.map(subscriber => ({
       id: subscriber.id,
       email: subscriber.email,
+      name: subscriber.name,
       subscribedAt: subscriber.subscribedAt.toISOString(),
-      isActive: subscriber.isActive,
-      preferences: subscriber.preferences,
-      lastEmailSent: subscriber.lastEmailSent?.toISOString() || null
+      isActive: subscriber.isActive
     }))
 
     return NextResponse.json({
@@ -33,7 +37,7 @@ export async function GET(request: NextRequest) {
       data: transformedSubscribers
     })
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('❌ Admin subscribers error:', error)
     return NextResponse.json(
       { success: false, error: 'Failed to fetch subscribers' },
@@ -79,19 +83,18 @@ export async function POST(request: NextRequest) {
         })
 
       case 'export-subscribers':
-        const allSubscribers = await DatabaseService.getSubscribersList({
+        const allResult = await DatabaseService.getSubscribersList({
           status: 'all',
           limit: 10000
         })
-        
+
         return NextResponse.json({
           success: true,
-          data: allSubscribers.map(sub => ({
+          data: allResult.subscribers.map(sub => ({
             email: sub.email,
+            name: sub.name,
             subscribedAt: sub.subscribedAt.toISOString(),
-            isActive: sub.isActive,
-            categories: sub.preferences.categories.join(';'),
-            frequency: sub.preferences.frequency
+            isActive: sub.isActive
           }))
         })
 
@@ -102,10 +105,10 @@ export async function POST(request: NextRequest) {
         )
     }
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('❌ Admin subscriber action error:', error)
     return NextResponse.json(
-      { success: false, error: error.message },
+      { success: false, error: error?.message || 'Unknown error' },
       { status: 500 }
     )
   }

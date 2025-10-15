@@ -1,0 +1,153 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Main Articles table - stores our analyzed stories
+model Article {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  aiAnalysis  String   @db.Text
+  category    String
+  tags        String[] @default([])
+  publishedAt DateTime
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  viewCount   Int      @default(0)
+  isPublished Boolean  @default(false)
+  
+  // Relationships
+  leftSource  NewsSource @relation("LeftSource", fields: [leftSourceId], references: [id], onDelete: Cascade)
+  rightSource NewsSource @relation("RightSource", fields: [rightSourceId], references: [id], onDelete: Cascade)
+  
+  leftSourceId  String @unique
+  rightSourceId String @unique
+  
+  @@map("articles")
+}
+
+// News Sources - stores original articles from outlets
+model NewsSource {
+  id          String    @id @default(cuid())
+  outlet      String
+  headline    String
+  summary     String    @db.Text
+  fullContent String?   @db.Text
+  url         String    @unique
+  author      String?
+  publishedAt DateTime?
+  bias        Bias
+  sourceType  SourceType
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  
+  // Relationships - each source belongs to exactly one article
+  leftArticles  Article[] @relation("LeftSource")
+  rightArticles Article[] @relation("RightSource")
+  
+  @@map("news_sources")
+}
+
+// Newsletter subscribers
+model Subscriber {
+  id            String            @id @default(cuid())
+  email         String            @unique
+  subscribedAt  DateTime          @default(now())
+  isActive      Boolean           @default(true)
+  preferences   SubscriberPrefs
+  lastEmailSent DateTime?
+  
+  @@map("subscribers")
+}
+
+// RSS Feeds we monitor for automation
+model RSSFeed {
+  id          String   @id @default(cuid())
+  url         String   @unique
+  outlet      String
+  bias        Bias
+  category    String?
+  isActive    Boolean  @default(true)
+  lastChecked DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@map("rss_feeds")
+}
+
+// Processed articles tracking (to avoid duplicates)
+model ProcessedArticle {
+  id        String   @id @default(cuid())
+  url       String   @unique
+  title     String
+  outlet    String
+  processed DateTime @default(now())
+  
+  @@map("processed_articles")
+}
+
+// Analytics for articles (future feature)
+model ArticleAnalytics {
+  id         String   @id @default(cuid())
+  articleId  String
+  views      Int      @default(0)
+  shares     Int      @default(0)
+  leftClicks Int      @default(0)
+  rightClicks Int     @default(0)
+  date       DateTime @default(now())
+  
+  @@unique([articleId, date])
+  @@map("article_analytics")
+}
+
+// Email campaigns (for newsletter automation)
+model EmailCampaign {
+  id          String          @id @default(cuid())
+  subject     String
+  content     String          @db.Text
+  status      CampaignStatus  @default(DRAFT)
+  scheduledAt DateTime?
+  sentAt      DateTime?
+  recipients  Int             @default(0)
+  opens       Int             @default(0)
+  clicks      Int             @default(0)
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  
+  @@map("email_campaigns")
+}
+
+// Enums
+enum Bias {
+  LEFT
+  RIGHT
+  CENTER
+}
+
+enum SourceType {
+  LEFT
+  RIGHT
+}
+
+enum CampaignStatus {
+  DRAFT
+  SCHEDULED
+  SENDING
+  SENT
+  CANCELLED
+}
+
+// JSON types for complex data
+type SubscriberPrefs {
+  categories String[] @default(["Politics", "Business"])
+  frequency  String   @default("daily") // "daily" | "weekly"
+  timezone   String   @default("UTC")
+}

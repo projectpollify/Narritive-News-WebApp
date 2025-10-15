@@ -69,7 +69,7 @@ export async function rateLimit(
 
 // Clean up expired rate limit entries
 function cleanupExpiredEntries(now: number) {
-  for (const [key, entry] of rateLimitMap.entries()) {
+  for (const [key, entry] of Array.from(rateLimitMap.entries())) {
     if (entry.resetTime <= now) {
       rateLimitMap.delete(key)
     }

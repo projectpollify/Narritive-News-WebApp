@@ -30,8 +30,8 @@ export async function POST(request: NextRequest) {
       )
     }
     
-    const { email, preferences } = validation.data
-    
+    const { email } = validation.data
+
     // Check if already subscribed
     const existingSubscriber = await DatabaseService.getSubscriberByEmail(email)
     if (existingSubscriber) {
@@ -42,16 +42,16 @@ export async function POST(request: NextRequest) {
         }, { status: 409 })
       } else {
         // Reactivate existing subscriber
-        await DatabaseService.reactivateSubscriber(email, preferences)
+        await DatabaseService.reactivateSubscriber(email)
         return NextResponse.json({
           success: true,
           message: 'Successfully resubscribed!'
         })
       }
     }
-    
+
     // Add new subscriber
-    const subscriber = await DatabaseService.addSubscriber(email, preferences)
+    const subscriber = await DatabaseService.addSubscriber(email)
     
     // Log subscription for analytics
     console.log(`📧 New subscriber: ${email}`)
@@ -68,10 +68,10 @@ export async function POST(request: NextRequest) {
       }
     })
     
-  } catch (error) {
+  } catch (error: any) {
     console.error('❌ Newsletter subscription error:', error)
     
-    if (error.message === 'Email already subscribed') {
+    if (error?.message || String(error) === 'Email already subscribed') {
       return NextResponse.json(
         { success: false, error: 'Email already subscribed' },
         { status: 409 }
@@ -95,7 +95,7 @@ export async function GET() {
       data: stats
     })
     
-  } catch (error) {
+  } catch (error: any) {
     console.error('❌ Newsletter stats error:', error)
     return NextResponse.json(
       { success: false, error: 'Failed to get newsletter stats' },
@@ -152,7 +152,7 @@ export async function DELETE(request: NextRequest) {
       message: 'Successfully unsubscribed'
     })
     
-  } catch (error) {
+  } catch (error: any) {
     console.error('❌ Newsletter unsubscribe error:', error)
     return NextResponse.json(
       { success: false, error: 'Failed to unsubscribe' },

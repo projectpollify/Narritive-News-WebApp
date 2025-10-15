@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { NewsScraper } from '@/lib/scraper'
+import { NewsScraper } from '@/lib/services/scraper'
 import { DatabaseService } from '@/lib/db'
 
 // GET /api/test-scraper - Test the scraping system with limited feeds
@@ -54,13 +54,13 @@ export async function GET(request: NextRequest) {
         
         console.log(`✅ ${feed.outlet}: ${articles.length} articles`)
         
-      } catch (error) {
-        console.error(`❌ Error testing ${feed.outlet}:`, error.message)
+      } catch (error: any) {
+        console.error(`❌ Error testing ${feed.outlet}:`, error?.message || String(error))
         results.push({
           outlet: feed.outlet,
           bias: feed.bias,
           url: feed.url,
-          error: error.message
+          error: error?.message || String(error)
         })
       }
     }
@@ -78,12 +78,12 @@ export async function GET(request: NextRequest) {
       results
     })
     
-  } catch (error) {
+  } catch (error: any) {
     console.error('❌ Test scraper failed:', error)
     return NextResponse.json(
       { 
         success: false, 
-        error: error.message,
+        error: error?.message || String(error),
         stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
       },
       { status: 500 }
@@ -126,10 +126,10 @@ export async function POST(request: NextRequest) {
       }
     })
     
-  } catch (error) {
+  } catch (error: any) {
     console.error('❌ Story matching test failed:', error)
     return NextResponse.json(
-      { success: false, error: error.message },
+      { success: false, error: error?.message || String(error) },
       { status: 500 }
     )
   }
@@ -153,9 +153,9 @@ export async function DELETE() {
         { status: 403 }
       )
     }
-  } catch (error) {
+  } catch (error: any) {
     return NextResponse.json(
-      { success: false, error: error.message },
+      { success: false, error: error?.message || String(error) },
       { status: 500 }
     )
   }

@@ -23,10 +23,8 @@ for file in "${FILES[@]}"; do
 done
 
 echo ""
-echo "📝 Please review the following files:"
+echo "📝 Claude, please read and review the following files:"
 echo "   - README.md (Project overview & quick start)"
 echo "   - PROJECT.md (Detailed development guide)"
 echo "   - MASTER_PLAN.md (Implementation roadmap)"
 echo ""
-echo "💡 Tip: In Claude Code, you can ask:"
-echo "   'review README.md and PROJECT.md and MASTER_PLAN.md'"

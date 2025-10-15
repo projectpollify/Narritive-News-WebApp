@@ -26,7 +26,7 @@ interface AnalyticsData {
   }
 }
 
-export function AnalyticsDashboard({ compact = false }: { compact?: boolean }) {
+function AnalyticsDashboard({ compact = false }: { compact?: boolean }) {
   const [data, setData] = useState<AnalyticsData | null>(null)
   const [timeframe, setTimeframe] = useState('week')
   const [loading, setLoading] = useState(true)
@@ -71,7 +71,7 @@ export function AnalyticsDashboard({ compact = false }: { compact?: boolean }) {
         }
         setData(mockData)
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to fetch analytics:', error)
     } finally {
       setLoading(false)
@@ -262,4 +262,9 @@ export function AnalyticsDashboard({ compact = false }: { compact?: boolean }) {
       )}
     </div>
   )
+}
+
+// Next.js page component
+export default function AnalyticsPage() {
+  return <AnalyticsDashboard />
 }

@@ -5,6 +5,9 @@
 
 # Testing
 /coverage
+test.db
+*.test.db
+*.test.db-journal
 
 # Next.js
 /.next/

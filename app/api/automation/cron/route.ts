@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
     if (process.env.NODE_ENV === 'production') {
       if (!cronSecret) {
         logger.error('CRON_SECRET not configured')
-        return unauthorizedResponse('Cron secret not configured')
+        return unauthorizedResponse()
       }
 
       // Vercel Cron sends Authorization header with the secret
@@ -23,74 +23,49 @@ export async function GET(request: NextRequest) {
         logger.warn('Unauthorized cron attempt', {
           authHeader: authHeader ? 'present' : 'missing',
         })
-        return unauthorizedResponse('Unauthorized')
+        return unauthorizedResponse()
       }
     }
 
     logger.cronJob('rss-scraping', 'started')
 
     // Import dynamically to avoid circular dependencies
-    const { scrapeRSSFeeds, matchStories } = await import('@/lib/services/scraper')
-    const { analyzeArticlePairs } = await import('@/lib/services/ai')
+    const { NewsScraper } = await import('@/lib/services/scraper')
 
-    // Step 1: Scrape RSS feeds
-    logger.info('Starting RSS scraping...')
+    // Run the full automation pipeline
+    logger.info('Starting news automation pipeline...')
     const startTime = Date.now()
 
-    const scrapedArticles = await scrapeRSSFeeds()
-    const scrapingDuration = Date.now() - startTime
-
-    logger.info(`RSS scraping completed: ${scrapedArticles.length} articles`, {
-      duration: `${scrapingDuration}ms`,
-    })
-
-    // Step 2: Match stories (left vs right)
-    logger.info('Starting story matching...')
-    const matchStartTime = Date.now()
-
-    const leftArticles = scrapedArticles.filter((a) => a.bias === 'LEFT')
-    const rightArticles = scrapedArticles.filter((a) => a.bias === 'RIGHT')
-
-    const matches = await matchStories(leftArticles, rightArticles)
-    const matchingDuration = Date.now() - matchStartTime
-
-    logger.info(`Story matching completed: ${matches.length} matches`, {
-      duration: `${matchingDuration}ms`,
-    })
-
-    // Step 3: Analyze matched pairs with AI (limit to first 5 to avoid timeout)
-    logger.info('Starting AI analysis...')
-    const aiStartTime = Date.now()
-
-    const matchesToAnalyze = matches.slice(0, 5) // Limit to avoid timeout
-    const analyzedArticles = await analyzeArticlePairs(matchesToAnalyze)
-    const aiDuration = Date.now() - aiStartTime
-
-    logger.info(`AI analysis completed: ${analyzedArticles.length} articles`, {
-      duration: `${aiDuration}ms`,
-    })
-
+    const result = await NewsScraper.runAutomation()
     const totalDuration = Date.now() - startTime
 
+    if (!result.success) {
+      logger.cronJob('rss-scraping', 'failed', {
+        error: result.error,
+        duration: `${totalDuration}ms`,
+      })
+      return handleError(new Error(result.error || 'Automation failed'), {
+        endpoint: '/api/automation/cron',
+      })
+    }
+
     logger.cronJob('rss-scraping', 'completed', {
-      scraped: scrapedArticles.length,
-      matched: matches.length,
-      analyzed: analyzedArticles.length,
+      processed: result.processed,
+      total: result.total,
       duration: `${totalDuration}ms`,
     })
 
     return successResponse({
       message: 'Cron job executed successfully',
       stats: {
-        articlesScraped: scrapedArticles.length,
-        storiesMatched: matches.length,
-        articlesAnalyzed: analyzedArticles.length,
+        articlesProcessed: result.processed,
+        totalMatched: result.total,
         durationMs: totalDuration,
       },
     })
-  } catch (error) {
+  } catch (error: any) {
     logger.cronJob('rss-scraping', 'failed', {
-      error: error instanceof Error ? error.message : String(error),
+      error: error instanceof Error ? error?.message || String(error) : String(error),
     })
     return handleError(error, {
       endpoint: '/api/automation/cron',

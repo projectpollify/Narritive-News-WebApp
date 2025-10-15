@@ -16,7 +16,7 @@ interface AutomationStatus {
   } | null
 }
 
-export function AutomationControl({ compact = false }: { compact?: boolean }) {
+function AutomationControl({ compact = false }: { compact?: boolean }) {
   const [status, setStatus] = useState<AutomationStatus | null>(null)
   const [loading, setLoading] = useState(false)
   const [actionLoading, setActionLoading] = useState('')
@@ -34,7 +34,7 @@ export function AutomationControl({ compact = false }: { compact?: boolean }) {
       if (data.success) {
         setStatus(data.data)
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to fetch automation status:', error)
     }
   }
@@ -61,7 +61,7 @@ export function AutomationControl({ compact = false }: { compact?: boolean }) {
       } else {
         alert(`Action failed: ${data.error}`)
       }
-    } catch (error) {
+    } catch (error: any) {
       alert(`Action failed: ${error.message}`)
     } finally {
       setActionLoading('')
@@ -244,4 +244,4 @@ export function AutomationControl({ compact = false }: { compact?: boolean }) {
       )}
     </div>
   )
-}
+}export default function Page() { return <AutomationControl /> }

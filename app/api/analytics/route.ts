@@ -29,7 +29,7 @@ export async function GET(request: NextRequest) {
       data: analytics
     })
     
-  } catch (error) {
+  } catch (error: any) {
     console.error('❌ Analytics API error:', error)
     return NextResponse.json(
       { success: false, error: 'Failed to fetch analytics' },
@@ -78,7 +78,7 @@ export async function POST(request: NextRequest) {
       message: 'Event tracked'
     })
     
-  } catch (error) {
+  } catch (error: any) {
     console.error('❌ Analytics tracking error:', error)
     return NextResponse.json(
       { success: false, error: 'Failed to track event' },

@@ -1,12 +1,36 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import dynamic from 'next/dynamic'
+
+// Eager load components that are shown on initial load
 import { SystemHealth } from '@/components/admin/SystemHealth'
-import { AutomationControl } from '@/components/admin/AutomationControl'
-import { AnalyticsDashboard } from '@/components/admin/AnalyticsDashboard'
-import { NewsletterManager } from '@/components/admin/NewsletterManager'
-import { ArticleManager } from '@/components/admin/ArticleManager'
-import { RSSManager } from '@/components/admin/RSSManager'
+
+// Lazy load heavy components that aren't immediately visible
+const AutomationControl = dynamic(
+  () => import('@/components/admin/AutomationControl').then(mod => ({ default: mod.AutomationControl })),
+  { loading: () => <div className="animate-pulse bg-gray-200 h-64 rounded-lg"></div>, ssr: false }
+)
+
+const AnalyticsDashboard = dynamic(
+  () => import('@/components/admin/AnalyticsDashboard').then(mod => ({ default: mod.AnalyticsDashboard })),
+  { loading: () => <div className="animate-pulse bg-gray-200 h-64 rounded-lg"></div>, ssr: false }
+)
+
+const NewsletterManager = dynamic(
+  () => import('@/components/admin/NewsletterManager').then(mod => ({ default: mod.NewsletterManager })),
+  { loading: () => <div className="animate-pulse bg-gray-200 h-64 rounded-lg"></div>, ssr: false }
+)
+
+const ArticleManager = dynamic(
+  () => import('@/components/admin/ArticleManager').then(mod => ({ default: mod.ArticleManager })),
+  { loading: () => <div className="animate-pulse bg-gray-200 h-64 rounded-lg"></div>, ssr: false }
+)
+
+const RSSManager = dynamic(
+  () => import('@/components/admin/RSSManager').then(mod => ({ default: mod.RSSManager })),
+  { loading: () => <div className="animate-pulse bg-gray-200 h-64 rounded-lg"></div>, ssr: false }
+)
 
 type TabType = 'overview' | 'automation' | 'analytics' | 'newsletter' | 'articles' | 'rss'
 
@@ -26,7 +50,7 @@ export default function AdminDashboard() {
       if (data.success) {
         setSystemStats(data.data)
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to fetch system stats:', error)
     } finally {
       setLoading(false)

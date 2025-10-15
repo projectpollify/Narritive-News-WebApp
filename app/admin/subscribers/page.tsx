@@ -25,7 +25,7 @@ interface Subscriber {
   }
 }
 
-export function NewsletterManager() {
+function NewsletterManager() {
   const [stats, setStats] = useState<NewsletterStats | null>(null)
   const [subscribers, setSubscribers] = useState<Subscriber[]>([])
   const [loading, setLoading] = useState(true)
@@ -53,7 +53,7 @@ export function NewsletterManager() {
       if (subscribersData.success) {
         setSubscribers(subscribersData.data)
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to fetch newsletter data:', error)
     } finally {
       setLoading(false)
@@ -80,7 +80,7 @@ export function NewsletterManager() {
       } else {
         alert(`Action failed: ${data.error}`)
       }
-    } catch (error) {
+    } catch (error: any) {
       alert(`Action failed: ${error.message}`)
     } finally {
       setActionLoading('')
@@ -308,4 +308,4 @@ export function NewsletterManager() {
       </div>
     </div>
   )
-}
+}export default function Page() { return <NewsletterManager /> }

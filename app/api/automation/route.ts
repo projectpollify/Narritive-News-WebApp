@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { automation } from '@/lib/automation'
-import { NewsScraper } from '@/lib/scraper'
+import { automation } from '@/lib/services/cron'
+import { NewsScraper } from '@/lib/services/scraper'
 
 // GET /api/automation - Get automation status
 export async function GET() {
@@ -15,7 +15,7 @@ export async function GET() {
         health
       }
     })
-  } catch (error) {
+  } catch (error: any) {
     return NextResponse.json(
       { success: false, error: 'Failed to get automation status' },
       { status: 500 }
@@ -70,9 +70,9 @@ export async function POST(request: NextRequest) {
           { status: 400 }
         )
     }
-  } catch (error) {
+  } catch (error: any) {
     return NextResponse.json(
-      { success: false, error: error.message },
+      { success: false, error: error?.message || String(error) },
       { status: 500 }
     )
   }
@@ -91,7 +91,7 @@ export async function PUT(request: NextRequest) {
       message: 'Settings updated',
       data: settings
     })
-  } catch (error) {
+  } catch (error: any) {
     return NextResponse.json(
       { success: false, error: 'Failed to update settings' },
       { status: 500 }

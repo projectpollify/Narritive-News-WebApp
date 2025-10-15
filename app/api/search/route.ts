@@ -36,13 +36,15 @@ export async function GET(request: NextRequest) {
     const searchResults = allArticles.filter(article => {
       const titleMatch = article.title.toLowerCase().includes(searchTerm)
       const analysisMatch = article.aiAnalysis.toLowerCase().includes(searchTerm)
-      const tagMatch = article.tags.some(tag => tag.toLowerCase().includes(searchTerm))
+      const tagMatch = Array.isArray(article.tags) && article.tags.some(tag =>
+        typeof tag === 'string' && tag.toLowerCase().includes(searchTerm)
+      )
       const leftHeadlineMatch = article.leftSource.headline.toLowerCase().includes(searchTerm)
       const rightHeadlineMatch = article.rightSource.headline.toLowerCase().includes(searchTerm)
       const leftSummaryMatch = article.leftSource.summary.toLowerCase().includes(searchTerm)
       const rightSummaryMatch = article.rightSource.summary.toLowerCase().includes(searchTerm)
-      
-      return titleMatch || analysisMatch || tagMatch || 
+
+      return titleMatch || analysisMatch || tagMatch ||
              leftHeadlineMatch || rightHeadlineMatch ||
              leftSummaryMatch || rightSummaryMatch
     })
@@ -53,9 +55,11 @@ export async function GET(request: NextRequest) {
       
       // Title matches are most important
       if (article.title.toLowerCase().includes(searchTerm)) score += 10
-      
+
       // Tag matches are also important
-      if (article.tags.some(tag => tag.toLowerCase().includes(searchTerm))) score += 8
+      if (Array.isArray(article.tags) && article.tags.some(tag =>
+        typeof tag === 'string' && tag.toLowerCase().includes(searchTerm)
+      )) score += 8
       
       // AI analysis matches
       if (article.aiAnalysis.toLowerCase().includes(searchTerm)) score += 5
@@ -138,7 +142,7 @@ export async function GET(request: NextRequest) {
       }
     })
     
-  } catch (error) {
+  } catch (error: any) {
     console.error('❌ Search API error:', error)
     return NextResponse.json(
       { success: false, error: 'Search failed' },
@@ -177,7 +181,7 @@ export async function POST(request: NextRequest) {
       .map(article => article.title)
       .slice(0, 5)
     
-    const allSuggestions = [...new Set([...suggestions, ...titleSuggestions])]
+    const allSuggestions = Array.from(new Set([...suggestions, ...titleSuggestions]))
     
     return NextResponse.json({
       success: true,
@@ -186,7 +190,7 @@ export async function POST(request: NextRequest) {
       }
     })
     
-  } catch (error) {
+  } catch (error: any) {
     console.error('❌ Search suggestions error:', error)
     return NextResponse.json(
       { success: false, error: 'Failed to get suggestions' },

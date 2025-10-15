@@ -1,5 +1,5 @@
 import nodemailer from 'nodemailer'
-import { DatabaseService } from './db'
+import { DatabaseService } from '../db'
 import { AIService } from './ai'
 
 export interface EmailResult {
@@ -15,7 +15,7 @@ export class EmailService {
   // Initialize email transporter
   static getTransporter() {
     if (!this.transporter) {
-      this.transporter = nodemailer.createTransporter({
+      this.transporter = nodemailer.createTransport({
         host: process.env.EMAIL_SERVER_HOST || 'smtp.gmail.com',
         port: parseInt(process.env.EMAIL_SERVER_PORT || '587'),
         secure: false, // true for 465, false for other ports
@@ -70,8 +70,9 @@ export class EmailService {
             await this.sendNewsletterEmail(subscriber.email, newsletterContent)
             return { success: true, email: subscriber.email }
           } catch (error) {
-            console.error(`❌ Failed to send to ${subscriber.email}:`, error.message)
-            return { success: false, email: subscriber.email, error: error.message }
+            const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+            console.error(`❌ Failed to send to ${subscriber.email}:`, errorMessage)
+            return { success: false, email: subscriber.email, error: errorMessage }
           }
         })
 
@@ -110,12 +111,13 @@ export class EmailService {
       }
 
     } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error'
       console.error('❌ Newsletter campaign failed:', error)
       return {
         success: false,
         sent: 0,
         failed: 0,
-        errors: [error.message]
+        errors: [errorMessage]
       }
     }
   }
@@ -394,9 +396,10 @@ Unsubscribe: ${process.env.SITE_URL}/unsubscribe?email=${email}
         message: 'Email configuration is working correctly'
       }
     } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error'
       return {
         success: false,
-        message: `Email configuration error: ${error.message}`
+        message: `Email configuration error: ${errorMessage}`
       }
     }
   }

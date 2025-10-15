@@ -39,10 +39,12 @@ export async function GET(request: NextRequest) {
     let filteredArticles = articles
     if (search) {
       const searchLower = search.toLowerCase()
-      filteredArticles = articles.filter(article => 
+      filteredArticles = articles.filter(article =>
         article.title.toLowerCase().includes(searchLower) ||
         article.aiAnalysis.toLowerCase().includes(searchLower) ||
-        article.tags.some(tag => tag.toLowerCase().includes(searchLower))
+        (Array.isArray(article.tags) && article.tags.some(tag =>
+          typeof tag === 'string' && tag.toLowerCase().includes(searchLower)
+        ))
       )
     }
     
@@ -93,7 +95,7 @@ export async function GET(request: NextRequest) {
       }
     })
     
-  } catch (error) {
+  } catch (error: any) {
     console.error('❌ Articles API error:', error)
     return NextResponse.json(
       { success: false, error: 'Failed to fetch articles' },
@@ -149,10 +151,10 @@ export async function POST(request: NextRequest) {
       }
     }, { status: 201 })
     
-  } catch (error) {
+  } catch (error: any) {
     console.error('❌ Create article error:', error)
     return NextResponse.json(
-      { success: false, error: error.message },
+      { success: false, error: error?.message || String(error) },
       { status: 500 }
     )
   }

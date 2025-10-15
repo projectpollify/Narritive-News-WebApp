@@ -31,15 +31,15 @@ enum UserRole {
 
 // User model for authentication
 model User {
-  id            String    @id @default(cuid())
-  email         String    @unique
-  name          String?
-  password      String    // Hashed password
-  role          UserRole  @default(USER)
-  isActive      Boolean   @default(true)
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  lastLoginAt   DateTime?
+  id          String    @id @default(cuid())
+  email       String    @unique
+  name        String?
+  password    String // Hashed password
+  role        UserRole  @default(USER)
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  lastLoginAt DateTime?
 
   @@map("users")
 }
@@ -65,6 +65,12 @@ model Article {
   leftSourceId  String @unique
   rightSourceId String @unique
 
+  // Indexes for performance optimization
+  @@index([category])
+  @@index([publishedAt])
+  @@index([isPublished])
+  @@index([category, publishedAt])
+  @@index([viewCount])
   @@map("articles")
 }
 
@@ -76,6 +82,7 @@ model NewsSource {
   summary     String     @db.Text
   fullContent String?    @db.Text
   url         String     @unique
+  imageUrl    String? // Featured image from article
   author      String?
   publishedAt DateTime?
   bias        BiasType
@@ -87,6 +94,11 @@ model NewsSource {
   leftArticle  Article? @relation("LeftSource")
   rightArticle Article? @relation("RightSource")
 
+  // Indexes for performance optimization
+  @@index([bias])
+  @@index([outlet])
+  @@index([publishedAt])
+  @@index([sourceType])
   @@map("news_sources")
 }
 
@@ -98,7 +110,10 @@ model Subscriber {
   isActive     Boolean  @default(true)
   subscribedAt DateTime @default(now())
   updatedAt    DateTime @updatedAt
-  
+
+  // Indexes for performance optimization
+  @@index([isActive])
+  @@index([subscribedAt])
   @@map("subscribers")
 }
 
@@ -113,6 +128,9 @@ model RSSFeed {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  // Indexes for performance optimization
+  @@index([isActive])
+  @@index([bias])
   @@map("rss_feeds")
 }
 
@@ -129,4 +147,36 @@ model Analytics {
   @@index([event])
   @@index([category])
   @@map("analytics")
+}
+
+// Track processed articles to avoid duplicates
+model ProcessedArticle {
+  id        String   @id @default(cuid())
+  url       String   @unique
+  title     String
+  outlet    String
+  createdAt DateTime @default(now())
+
+  @@index([url])
+  @@index([outlet])
+  @@map("processed_articles")
+}
+
+// Article-specific analytics (daily aggregations)
+model ArticleAnalytics {
+  id             String   @id @default(cuid())
+  articleId      String
+  date           DateTime @db.Date
+  views          Int      @default(0)
+  uniqueVisitors Int      @default(0)
+  engagementTime Int      @default(0) // in seconds
+  leftClicks     Int      @default(0) // clicks to left-leaning source
+  rightClicks    Int      @default(0) // clicks to right-leaning source
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@unique([articleId, date], name: "articleId_date")
+  @@index([articleId])
+  @@index([date])
+  @@map("article_analytics")
 }

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { EmailService } from '@/lib/email'
-import { withRateLimit, rateLimitConfigs } from '@/lib/middleware'
+import { EmailService } from '@/lib/services/email'
+import { withRateLimit, rateLimitConfigs } from '@/lib/utils/middleware'
 
 // POST /api/email/test - Send test email
 export async function POST(request: NextRequest) {
@@ -59,15 +59,15 @@ export async function POST(request: NextRequest) {
               { status: 400 }
             )
         }
-      } catch (error) {
+      } catch (error: any) {
         console.error('❌ Email API error:', error)
         return NextResponse.json(
-          { success: false, error: error.message },
+          { success: false, error: error?.message || String(error) },
           { status: 500 }
         )
       }
     },
-    'email-test'
+    'default'
   )
 }
 
@@ -85,9 +85,9 @@ export async function GET() {
         serviceHealth: health
       }
     })
-  } catch (error) {
+  } catch (error: any) {
     return NextResponse.json(
-      { success: false, error: error.message },
+      { success: false, error: error?.message || String(error) },
       { status: 500 }
     )
   }

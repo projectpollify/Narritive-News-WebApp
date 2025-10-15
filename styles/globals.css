@@ -48,7 +48,7 @@
   }
   
   .news-content {
-    @apply prose prose-gray max-w-none;
+    @apply prose max-w-none;
   }
   
   .news-content p {

@@ -1,21 +1,35 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import { formatDistanceToNow } from 'date-fns'
+
+interface EnhancedAnalysis {
+  summary: string
+  truthCheck?: string
+  spinDetection?: string
+  realImpact?: string
+  commonGround?: string
+  biggerPicture?: string
+}
 
 export interface Article {
   id: string
   title: string
-  aiAnalysis: string
+  aiAnalysis: string | EnhancedAnalysis
   leftSource: {
     outlet: string
     headline: string
     summary: string
     url: string
+    imageUrl?: string
+    author?: string
   }
   rightSource: {
     outlet: string
     headline: string
     summary: string
     url: string
+    imageUrl?: string
+    author?: string
   }
   publishedAt: string
   category: string
@@ -27,6 +41,9 @@ interface ArticleCardProps {
 
 export function ArticleCard({ article }: ArticleCardProps) {
   const timeAgo = formatDistanceToNow(new Date(article.publishedAt), { addSuffix: true })
+  const analysisSummary = typeof article.aiAnalysis === 'string'
+    ? article.aiAnalysis
+    : article.aiAnalysis.summary
 
   return (
     <article className="article-card p-6 hover:shadow-lg transition-all duration-200">
@@ -47,51 +64,127 @@ export function ArticleCard({ article }: ArticleCardProps) {
         </h2>
       </Link>
 
-      {/* AI Analysis Preview */}
+      {/* Truth & Impact Analysis Preview */}
       <div className="ai-analysis rounded-lg p-4 mb-6">
         <div className="flex items-center mb-2">
           <div className="w-5 h-5 bg-green-600 rounded-full flex items-center justify-center mr-2">
             <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
-          <span className="text-sm font-medium text-green-800">AI Analysis</span>
+          <span className="text-sm font-medium text-green-800">Truth & Impact</span>
         </div>
         <p className="text-sm text-green-700 leading-relaxed">
-          {article.aiAnalysis}
+          {analysisSummary}
         </p>
       </div>
 
       {/* Side-by-Side Sources */}
-      <div className="grid md:grid-cols-2 gap-4 mb-4">
+      <div className="grid md:grid-cols-2 gap-6 mb-4">
         {/* Left Source */}
-        <div className="perspective-left rounded-lg p-4">
-          <div className="flex items-center justify-between mb-2">
-            <span className="source-left source-badge text-xs">
-              {article.leftSource.outlet}
-            </span>
+        <div className="perspective-left rounded-lg overflow-hidden">
+          {/* Article Image */}
+          {article.leftSource.imageUrl && (
+            <div className="relative h-48 w-full bg-gray-200">
+              <Image
+                src={article.leftSource.imageUrl}
+                alt={article.leftSource.headline}
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 100vw, 50vw"
+              />
+            </div>
+          )}
+
+          <div className="p-4">
+            {/* Outlet Badge */}
+            <div className="flex items-center justify-between mb-3">
+              <span className="source-left source-badge text-xs font-semibold">
+                {article.leftSource.outlet}
+              </span>
+              {article.leftSource.author && (
+                <span className="text-xs text-blue-600">
+                  By {article.leftSource.author}
+                </span>
+              )}
+            </div>
+
+            {/* Headline */}
+            <h3 className="font-bold text-blue-900 text-base mb-2 leading-tight">
+              {article.leftSource.headline}
+            </h3>
+
+            {/* Summary */}
+            <p className="text-sm text-blue-700 leading-relaxed line-clamp-3 mb-3">
+              {article.leftSource.summary}
+            </p>
+
+            {/* Read Original Link */}
+            <a
+              href={article.leftSource.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center text-sm text-blue-600 hover:text-blue-800 font-medium transition-colors"
+            >
+              Read on {article.leftSource.outlet}
+              <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+              </svg>
+            </a>
           </div>
-          <h3 className="font-semibold text-blue-900 text-sm mb-2 leading-tight">
-            {article.leftSource.headline}
-          </h3>
-          <p className="text-xs text-blue-700 leading-relaxed line-clamp-3">
-            {article.leftSource.summary}
-          </p>
         </div>
 
         {/* Right Source */}
-        <div className="perspective-right rounded-lg p-4">
-          <div className="flex items-center justify-between mb-2">
-            <span className="source-right source-badge text-xs">
-              {article.rightSource.outlet}
-            </span>
+        <div className="perspective-right rounded-lg overflow-hidden">
+          {/* Article Image */}
+          {article.rightSource.imageUrl && (
+            <div className="relative h-48 w-full bg-gray-200">
+              <Image
+                src={article.rightSource.imageUrl}
+                alt={article.rightSource.headline}
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 100vw, 50vw"
+              />
+            </div>
+          )}
+
+          <div className="p-4">
+            {/* Outlet Badge */}
+            <div className="flex items-center justify-between mb-3">
+              <span className="source-right source-badge text-xs font-semibold">
+                {article.rightSource.outlet}
+              </span>
+              {article.rightSource.author && (
+                <span className="text-xs text-red-600">
+                  By {article.rightSource.author}
+                </span>
+              )}
+            </div>
+
+            {/* Headline */}
+            <h3 className="font-bold text-red-900 text-base mb-2 leading-tight">
+              {article.rightSource.headline}
+            </h3>
+
+            {/* Summary */}
+            <p className="text-sm text-red-700 leading-relaxed line-clamp-3 mb-3">
+              {article.rightSource.summary}
+            </p>
+
+            {/* Read Original Link */}
+            <a
+              href={article.rightSource.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center text-sm text-red-600 hover:text-red-800 font-medium transition-colors"
+            >
+              Read on {article.rightSource.outlet}
+              <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+              </svg>
+            </a>
           </div>
-          <h3 className="font-semibold text-red-900 text-sm mb-2 leading-tight">
-            {article.rightSource.headline}
-          </h3>
-          <p className="text-xs text-red-700 leading-relaxed line-clamp-3">
-            {article.rightSource.summary}
-          </p>
         </div>
       </div>
 

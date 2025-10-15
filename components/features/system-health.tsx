@@ -13,8 +13,14 @@ interface SystemStats {
   dbHealth: 'healthy' | 'error'
 }
 
+interface Service {
+  name: string
+  status: string
+  description: string
+}
+
 export function SystemHealth({ stats }: { stats: SystemStats | null }) {
-  const [services, setServices] = useState([])
+  const [services, setServices] = useState<Service[]>([])
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {

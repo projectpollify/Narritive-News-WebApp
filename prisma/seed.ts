@@ -124,7 +124,7 @@ async function main() {
 
   for (const feed of rssFeeds) {
     await prisma.rSSFeed.create({
-      data: feed,
+      data: feed as any,
     })
   }
   console.log(`📰 Created ${rssFeeds.length} RSS feeds`)

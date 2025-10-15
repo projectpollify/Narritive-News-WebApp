@@ -1,6 +1,6 @@
 'use client'
 
-import { BannerAd, SidebarAd, InArticleAd, FooterAd } from './AdSense'
+import { BannerAd, SidebarAd, InArticleAd, FooterAd } from './adsense'
 
 // Layout wrapper that includes strategic ad placements
 export function MonetizedPageLayout({ 

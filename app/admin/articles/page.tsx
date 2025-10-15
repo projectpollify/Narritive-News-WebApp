@@ -20,7 +20,7 @@ interface Article {
   }
 }
 
-export function ArticleManager() {
+function ArticleManager() {
   const [articles, setArticles] = useState<Article[]>([])
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState('all')
@@ -50,7 +50,7 @@ export function ArticleManager() {
       if (data.success) {
         setArticles(data.data)
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to fetch articles:', error)
     } finally {
       setLoading(false)
@@ -81,7 +81,7 @@ export function ArticleManager() {
       } else {
         alert(`Action failed: ${data.error}`)
       }
-    } catch (error) {
+    } catch (error: any) {
       alert(`Action failed: ${error.message}`)
     }
   }
@@ -349,4 +349,4 @@ export function ArticleManager() {
       </div>
     </div>
   )
-}
+}export default function Page() { return <ArticleManager /> }

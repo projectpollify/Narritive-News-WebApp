@@ -12,7 +12,7 @@ interface RSSFeed {
   lastChecked?: string
 }
 
-export function RSSManager() {
+function RSSManager() {
   const [feeds, setFeeds] = useState<RSSFeed[]>([])
   const [loading, setLoading] = useState(true)
   const [showAddForm, setShowAddForm] = useState(false)
@@ -37,7 +37,7 @@ export function RSSManager() {
       if (data.success) {
         setFeeds(data.data)
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to fetch RSS feeds:', error)
     } finally {
       setLoading(false)
@@ -67,7 +67,7 @@ export function RSSManager() {
       } else {
         alert(`Failed to add feed: ${data.error}`)
       }
-    } catch (error) {
+    } catch (error: any) {
       alert(`Failed to add feed: ${error.message}`)
     }
   }
@@ -87,7 +87,7 @@ export function RSSManager() {
             : feed
         ))
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to toggle feed status:', error)
     }
   }
@@ -111,7 +111,7 @@ export function RSSManager() {
       } else {
         alert(`Feed test failed: ${data.error}`)
       }
-    } catch (error) {
+    } catch (error: any) {
       alert(`Feed test failed: ${error.message}`)
     } finally {
       setTestingFeed('')
@@ -129,7 +129,7 @@ export function RSSManager() {
       if (response.ok) {
         setFeeds(feeds.filter(feed => feed.id !== feedId))
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to delete feed:', error)
     }
   }
@@ -425,4 +425,4 @@ export function RSSManager() {
       </div>
     </div>
   )
-}
+}export default function Page() { return <RSSManager /> }
