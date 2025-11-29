@@ -70,8 +70,9 @@ const nextConfig = {
   compress: true, // Enable gzip compression
   poweredByHeader: false, // Remove X-Powered-By header for security
   // Generate static pages at build time when possible
+  // Generate static pages at build time when possible
   experimental: {
-    optimizeCss: true, // Enable CSS optimization
+    // optimizeCss: true, // Disable to fix build error
   },
 }
 

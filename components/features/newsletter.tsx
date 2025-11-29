@@ -10,7 +10,7 @@ export function Newsletter() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setStatus('loading')
-    
+
     try {
       const response = await fetch('/api/newsletter', {
         method: 'POST',
@@ -43,13 +43,18 @@ export function Newsletter() {
   }
 
   return (
-    <section className="bg-blue-600 text-white rounded-2xl p-8 mb-12">
-      <div className="max-w-2xl mx-auto text-center">
-        <h2 className="text-3xl font-bold mb-4">
+    <section className="bg-navy-900 text-white rounded-sm p-12 mb-16 relative overflow-hidden shadow-card border-t-4 border-gold-500">
+      {/* Background Pattern */}
+      <div className="absolute inset-0 opacity-10">
+        <div className="absolute top-0 left-0 w-full h-full" style={{ backgroundImage: 'radial-gradient(#D4AF37 1px, transparent 1px)', backgroundSize: '24px 24px' }}></div>
+      </div>
+
+      <div className="relative z-10 max-w-2xl mx-auto text-center">
+        <h2 className="text-3xl font-serif font-bold mb-4 text-white">
           Get Daily Perspective Analysis
         </h2>
-        <p className="text-blue-100 mb-6 text-lg">
-          Receive our AI-powered news analysis in your inbox every morning. 
+        <p className="text-gray-300 mb-8 text-lg font-light leading-relaxed">
+          Join 5,000+ readers who receive our AI-powered news analysis in their inbox every morning.
           See how different outlets cover the day's biggest stories.
         </p>
 
@@ -64,7 +69,7 @@ export function Newsletter() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Enter your email"
-              className="w-full px-4 py-3 rounded-lg text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-300 focus:outline-none"
+              className="w-full px-4 py-3 rounded-sm text-navy-900 placeholder-gray-500 focus:ring-2 focus:ring-gold-500 focus:outline-none border-none"
               required
               disabled={status === 'loading'}
             />
@@ -72,39 +77,38 @@ export function Newsletter() {
           <button
             type="submit"
             disabled={status === 'loading'}
-            className="bg-white text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-blue-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+            className="bg-gold-500 text-navy-900 px-8 py-3 rounded-sm font-bold uppercase tracking-wide hover:bg-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap shadow-md"
           >
             {status === 'loading' ? 'Subscribing...' : 'Subscribe Free'}
           </button>
         </form>
 
         {message && (
-          <div className={`mt-4 p-3 rounded-lg ${
-            status === 'success' 
-              ? 'bg-green-500 text-white' 
-              : status === 'error' 
-              ? 'bg-red-500 text-white' 
-              : ''
-          }`}>
+          <div className={`mt-4 p-3 rounded-sm text-sm font-medium ${status === 'success'
+              ? 'bg-green-900/50 text-green-200 border border-green-800'
+              : status === 'error'
+                ? 'bg-red-900/50 text-red-200 border border-red-800'
+                : ''
+            }`}>
             {message}
           </div>
         )}
 
-        <div className="mt-6 flex items-center justify-center space-x-6 text-sm text-blue-200">
+        <div className="mt-8 flex items-center justify-center space-x-8 text-xs text-gray-400 uppercase tracking-widest">
           <div className="flex items-center">
-            <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-4 h-4 mr-2 text-gold-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
             </svg>
             Free forever
           </div>
           <div className="flex items-center">
-            <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-4 h-4 mr-2 text-gold-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 0h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
             </svg>
             No spam
           </div>
           <div className="flex items-center">
-            <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-4 h-4 mr-2 text-gold-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
             </svg>
             Unsubscribe anytime

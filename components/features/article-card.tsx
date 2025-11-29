@@ -46,181 +46,101 @@ export function ArticleCard({ article }: ArticleCardProps) {
     : article.aiAnalysis.summary
 
   return (
-    <article className="article-card p-6 hover:shadow-lg transition-all duration-200">
-      {/* Category and Date */}
-      <div className="flex items-center justify-between mb-3">
-        <span className="source-badge bg-gray-100 text-gray-700">
-          {article.category}
-        </span>
-        <time className="text-sm text-gray-500" dateTime={article.publishedAt}>
-          {timeAgo}
-        </time>
-      </div>
-
-      {/* Main Title */}
-      <Link href={`/article/${article.id}`} className="block mb-4 group">
-        <h2 className="text-xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors leading-tight">
-          {article.title}
-        </h2>
-      </Link>
-
-      {/* Truth & Impact Analysis Preview */}
-      <div className="ai-analysis rounded-lg p-4 mb-6">
-        <div className="flex items-center mb-2">
-          <div className="w-5 h-5 bg-green-600 rounded-full flex items-center justify-center mr-2">
-            <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          </div>
-          <span className="text-sm font-medium text-green-800">Truth & Impact</span>
+    <article className="bg-white rounded-sm shadow-card border border-gray-100 overflow-hidden hover:shadow-xl transition-all duration-300 group">
+      <div className="p-8">
+        {/* Header: Category & Date */}
+        <div className="flex items-center justify-between mb-4">
+          <span className="text-xs font-bold text-gold-600 uppercase tracking-widest">
+            {article.category}
+          </span>
+          <time className="text-xs font-medium text-gray-400 uppercase tracking-wide" dateTime={article.publishedAt}>
+            {timeAgo}
+          </time>
         </div>
-        <p className="text-sm text-green-700 leading-relaxed">
-          {analysisSummary}
-        </p>
-      </div>
 
-      {/* Side-by-Side Sources */}
-      <div className="grid md:grid-cols-2 gap-6 mb-4">
-        {/* Left Source */}
-        <div className="perspective-left rounded-lg overflow-hidden">
-          {/* Article Image */}
-          {article.leftSource.imageUrl && (
-            <div className="relative h-48 w-full bg-gray-200">
-              <Image
-                src={article.leftSource.imageUrl}
-                alt={article.leftSource.headline}
-                fill
-                className="object-cover"
-                sizes="(max-width: 768px) 100vw, 50vw"
-              />
+        {/* Main Title */}
+        <Link href={`/article/${article.id}`} className="block mb-6">
+          <h2 className="text-3xl font-serif font-bold text-navy-900 group-hover:text-gold-600 transition-colors leading-tight">
+            {article.title}
+          </h2>
+        </Link>
+
+        {/* AI Analysis Box */}
+        <div className="bg-paper rounded-sm p-6 mb-8 border-l-2 border-gold-500 relative">
+          <div className="absolute -top-3 left-4 bg-white px-2 py-1 border border-gray-100 shadow-sm rounded-sm">
+            <div className="flex items-center space-x-2">
+              <div className="w-2 h-2 bg-gold-500 rounded-full animate-pulse"></div>
+              <span className="text-xs font-bold text-navy-900 uppercase tracking-wider">AI Analysis</span>
             </div>
-          )}
+          </div>
+          <p className="text-gray-600 leading-relaxed font-sans text-lg italic">
+            "{analysisSummary}"
+          </p>
+        </div>
 
-          <div className="p-4">
-            {/* Outlet Badge */}
+        {/* Two Perspectives Grid */}
+        <div className="grid md:grid-cols-2 gap-px bg-gray-200 border border-gray-200 rounded-sm overflow-hidden">
+          {/* Left Perspective */}
+          <div className="bg-white p-6 hover:bg-democrat-light/10 transition-colors relative group/left">
+            <div className="absolute top-0 left-0 w-full h-1 bg-democrat scale-x-0 group-hover/left:scale-x-100 transition-transform origin-left"></div>
             <div className="flex items-center justify-between mb-3">
-              <span className="source-left source-badge text-xs font-semibold">
+              <span className="text-xs font-bold text-democrat uppercase tracking-wider flex items-center">
+                <span className="w-1.5 h-1.5 bg-democrat rounded-full mr-2"></span>
                 {article.leftSource.outlet}
               </span>
-              {article.leftSource.author && (
-                <span className="text-xs text-blue-600">
-                  By {article.leftSource.author}
-                </span>
-              )}
             </div>
-
-            {/* Headline */}
-            <h3 className="font-bold text-blue-900 text-base mb-2 leading-tight">
+            <h3 className="font-serif font-bold text-lg text-navy-900 mb-2 leading-snug group-hover/left:text-democrat transition-colors">
               {article.leftSource.headline}
             </h3>
-
-            {/* Summary */}
-            <p className="text-sm text-blue-700 leading-relaxed line-clamp-3 mb-3">
+            <p className="text-sm text-gray-500 leading-relaxed line-clamp-3 mb-4">
               {article.leftSource.summary}
             </p>
-
-            {/* Read Original Link */}
-            <a
-              href={article.leftSource.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center text-sm text-blue-600 hover:text-blue-800 font-medium transition-colors"
-            >
-              Read on {article.leftSource.outlet}
-              <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-              </svg>
+            <a href={article.leftSource.url} target="_blank" rel="noopener noreferrer" className="text-xs font-bold text-democrat uppercase tracking-wide hover:underline">
+              Read Original →
             </a>
           </div>
-        </div>
 
-        {/* Right Source */}
-        <div className="perspective-right rounded-lg overflow-hidden">
-          {/* Article Image */}
-          {article.rightSource.imageUrl && (
-            <div className="relative h-48 w-full bg-gray-200">
-              <Image
-                src={article.rightSource.imageUrl}
-                alt={article.rightSource.headline}
-                fill
-                className="object-cover"
-                sizes="(max-width: 768px) 100vw, 50vw"
-              />
-            </div>
-          )}
-
-          <div className="p-4">
-            {/* Outlet Badge */}
+          {/* Right Perspective */}
+          <div className="bg-white p-6 hover:bg-republican-light/10 transition-colors relative group/right">
+            <div className="absolute top-0 left-0 w-full h-1 bg-republican scale-x-0 group-hover/right:scale-x-100 transition-transform origin-left"></div>
             <div className="flex items-center justify-between mb-3">
-              <span className="source-right source-badge text-xs font-semibold">
+              <span className="text-xs font-bold text-republican uppercase tracking-wider flex items-center">
+                <span className="w-1.5 h-1.5 bg-republican rounded-full mr-2"></span>
                 {article.rightSource.outlet}
               </span>
-              {article.rightSource.author && (
-                <span className="text-xs text-red-600">
-                  By {article.rightSource.author}
-                </span>
-              )}
             </div>
-
-            {/* Headline */}
-            <h3 className="font-bold text-red-900 text-base mb-2 leading-tight">
+            <h3 className="font-serif font-bold text-lg text-navy-900 mb-2 leading-snug group-hover/right:text-republican transition-colors">
               {article.rightSource.headline}
             </h3>
-
-            {/* Summary */}
-            <p className="text-sm text-red-700 leading-relaxed line-clamp-3 mb-3">
+            <p className="text-sm text-gray-500 leading-relaxed line-clamp-3 mb-4">
               {article.rightSource.summary}
             </p>
-
-            {/* Read Original Link */}
-            <a
-              href={article.rightSource.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center text-sm text-red-600 hover:text-red-800 font-medium transition-colors"
-            >
-              Read on {article.rightSource.outlet}
-              <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-              </svg>
+            <a href={article.rightSource.url} target="_blank" rel="noopener noreferrer" className="text-xs font-bold text-republican uppercase tracking-wide hover:underline">
+              Read Original →
             </a>
           </div>
         </div>
       </div>
 
-      {/* Action Buttons */}
-      <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-        <Link 
+      {/* Footer Actions */}
+      <div className="bg-gray-50 px-8 py-4 border-t border-gray-100 flex items-center justify-between">
+        <Link
           href={`/article/${article.id}`}
-          className="btn-primary text-sm px-4 py-2"
+          className="text-sm font-bold text-navy-900 hover:text-gold-600 transition-colors uppercase tracking-wide flex items-center"
         >
-          Read Full Analysis
+          Full Comparison <span className="ml-2">→</span>
         </Link>
-        
-        <div className="flex items-center space-x-3">
-          <button className="text-gray-500 hover:text-gray-700 transition-colors">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" />
-            </svg>
+
+        <div className="flex items-center space-x-4 text-gray-400">
+          <button className="hover:text-navy-900 transition-colors flex items-center space-x-1">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" /></svg>
+            <span className="text-xs font-medium">Share</span>
           </button>
-          
-          <button className="text-gray-500 hover:text-gray-700 transition-colors">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
-            </svg>
+          <button className="hover:text-navy-900 transition-colors">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" /></svg>
           </button>
         </div>
       </div>
     </article>
   )
 }
-
-// Utility CSS classes for line clamping (add to globals.css)
-export const additionalStyles = `
-.line-clamp-3 {
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-`

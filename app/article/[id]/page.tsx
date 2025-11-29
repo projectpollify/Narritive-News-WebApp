@@ -32,6 +32,9 @@ interface Article {
   rightSource: NewsSource
   publishedAt: string
   category: string
+  contentHash?: string
+  onChainTx?: string
+  onChainTimestamp?: string
 }
 
 // Mock data - same as homepage (will be replaced with API/database later)
@@ -66,7 +69,10 @@ const mockArticles: Article[] = [
       fullContent: 'The Federal Reserve cut interest rates by a quarter percentage point today, a decision that has sparked concerns among economists who warn the move could reignite the inflation that has plagued the economy for the past two years. The rate cut brings the federal funds rate to 4.5%-4.75%, down from the peak of 5.5% that Fed officials had maintained to combat rising prices.\n\nCritics argue that the central bank is moving too quickly to ease monetary policy while inflation remains above the Fed\'s 2% target. Despite recent progress, consumer prices are still rising at an annual rate of 2.4%, and core inflation—which excludes volatile food and energy prices—stands at 2.8%.\n\n"This is a premature move that could undermine the progress we\'ve made on inflation," said former Fed advisor John Taylor. "The Fed should be holding steady until we see inflation consistently at target."\n\nThe decision comes as the federal government continues to run massive deficits, with spending far outpacing revenues. This fiscal profligacy, combined with easier monetary policy, creates a dangerous cocktail that could lead to renewed price pressures. Government spending has added approximately $2 trillion to the national debt in the past year alone.\n\nBusiness leaders have expressed mixed reactions to the rate cut. While some welcome the prospect of lower borrowing costs, others worry about the long-term implications for price stability. "We need predictable monetary policy, not political pressure driving decisions," said one manufacturing CEO who requested anonymity.\n\nThe Fed\'s decision appears to be influenced by concerns about the labor market, but unemployment remains relatively low at 4.1%. Historically, this level of unemployment has been associated with a healthy economy, not one requiring emergency monetary stimulus.\n\nMoreover, cutting rates now could limit the Fed\'s ability to respond to future economic downturns. With rates already substantially lower than the peak, the central bank has less ammunition to combat a recession if one emerges. This "running out of runway" problem has concerned monetary policy experts.\n\nEnergy markets have already begun to react to the looser monetary policy, with oil prices rising in anticipation of stronger demand and a weaker dollar. This could translate into higher gasoline prices for consumers, further complicating the inflation picture.\n\nThe Fed\'s decision also raises questions about political independence. With an election year approaching, some observers suggest the timing of the rate cut is suspicious, potentially designed to boost economic activity ahead of the vote. Fed Chair Jerome Powell has denied any political motivation, but the optics remain problematic.\n\nLooking ahead, the Fed has indicated it will proceed cautiously with future rate adjustments, but markets are already pricing in additional cuts. This expectation could become self-fulfilling, further loosening financial conditions and potentially reigniting the inflation cycle that the Fed spent two years trying to break.'
     },
     publishedAt: '2024-01-15T14:30:00Z',
-    category: 'Business'
+    category: 'Business',
+    contentHash: 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855',
+    onChainTx: '0x7f9a3b2c1d8e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9',
+    onChainTimestamp: '2024-01-15T14:35:00Z'
   },
   {
     id: '2',
@@ -179,156 +185,178 @@ export default function ArticlePage({
     : article.aiAnalysis.summary
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="min-h-screen bg-paper">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Back Navigation */}
         <Link
           href="/"
-          className="inline-flex items-center text-blue-600 hover:text-blue-700 mb-6 group"
+          className="inline-flex items-center text-gold-600 hover:text-navy-900 mb-8 group font-medium tracking-wide uppercase text-xs transition-colors"
         >
           <svg
-            className="w-5 h-5 mr-2 transition-transform group-hover:-translate-x-1"
+            className="w-4 h-4 mr-2 transition-transform group-hover:-translate-x-1"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
           >
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
-          Back to Articles
+          Back to Analysis
         </Link>
 
         {/* Header Section */}
-        <header className="mb-8">
-          <div className="flex items-center gap-3 mb-4">
-            <span className="source-badge bg-gray-100 text-gray-700">
+        <header className="mb-12 max-w-4xl">
+          <div className="flex items-center gap-3 mb-6">
+            <span className="inline-block px-3 py-1 bg-navy-900 text-white text-xs font-bold uppercase tracking-widest rounded-sm">
               {article.category}
             </span>
-            <span className="text-gray-500">•</span>
-            <time className="text-gray-600" dateTime={article.publishedAt}>
-              {publishedDate} ({timeAgo})
+            <span className="text-gray-400">•</span>
+            <time className="text-gray-500 text-sm font-medium uppercase tracking-wide" dateTime={article.publishedAt}>
+              {publishedDate}
             </time>
           </div>
 
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4 leading-tight">
+          <h1 className="text-4xl md:text-6xl font-serif font-bold text-navy-900 mb-6 leading-tight">
             {article.title}
           </h1>
         </header>
 
-        {/* Truth & Impact Analysis Section - Prominent at top */}
-        <section className="ai-analysis rounded-xl p-6 md:p-8 mb-8">
-          <div className="flex items-center mb-6">
-            <div className="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center mr-3">
-              <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
-            <h2 className="text-2xl font-bold text-green-900">Truth & Impact Analysis</h2>
+        {/* Blockchain Verification Badge */}
+        {(article.contentHash || article.id === '1') && (
+          <div className="mb-12 flex items-center gap-2 text-sm text-gray-500 bg-gray-50 px-4 py-2 rounded-full w-fit border border-gray-100">
+            <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span className="font-medium text-navy-900">Truth Chain Verified:</span>
+            <span className="font-mono text-xs text-gray-400">
+              {article.contentHash ? `${article.contentHash.substring(0, 8)}...` : '0x7f9a...e8f9'}
+            </span>
+            <a href="#" className="text-gold-600 hover:text-navy-900 underline decoration-gold-500/30 hover:decoration-gold-600 transition-all ml-1 text-xs uppercase tracking-wide font-bold">
+              Verify Record
+            </a>
           </div>
+        )}
 
-          {typeof article.aiAnalysis === 'string' ? (
-            // Simple string format (legacy)
-            <div className="news-content">
-              <p className="text-lg text-green-800 leading-relaxed">
-                {article.aiAnalysis}
-              </p>
+        {/* Truth & Impact Analysis Section - Prominent at top */}
+        <section className="bg-white rounded-sm shadow-card border-t-4 border-gold-500 p-8 md:p-10 mb-12 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-gold-100 rounded-full opacity-10 -mr-32 -mt-32 blur-3xl"></div>
+
+          <div className="relative z-10">
+            <div className="flex items-center mb-8 border-b border-gray-100 pb-4">
+              <div className="w-10 h-10 bg-navy-900 rounded-sm flex items-center justify-center mr-4 shadow-sm">
+                <svg className="w-6 h-6 text-gold-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                </svg>
+              </div>
+              <div>
+                <h2 className="text-2xl font-serif font-bold text-navy-900">AI Consensus Analysis</h2>
+                <p className="text-sm text-gray-500">Synthesized from multiple perspectives</p>
+              </div>
             </div>
-          ) : (
-            // Enhanced structured format
-            <div className="space-y-6">
-              {article.aiAnalysis.truthCheck && (
-                <div>
-                  <h3 className="text-lg font-bold text-green-900 mb-2 flex items-center">
-                    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    What's True
-                  </h3>
-                  <p className="text-green-800 leading-relaxed pl-7">
-                    {article.aiAnalysis.truthCheck}
-                  </p>
-                </div>
-              )}
 
-              {article.aiAnalysis.spinDetection && (
-                <div>
-                  <h3 className="text-lg font-bold text-green-900 mb-2 flex items-center">
-                    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    What's Spin
-                  </h3>
-                  <p className="text-green-800 leading-relaxed pl-7">
-                    {article.aiAnalysis.spinDetection}
-                  </p>
-                </div>
-              )}
+            {typeof article.aiAnalysis === 'string' ? (
+              // Simple string format (legacy)
+              <div className="news-content">
+                <p className="text-xl text-gray-700 leading-relaxed font-serif italic border-l-4 border-gold-500 pl-6 py-2">
+                  "{article.aiAnalysis}"
+                </p>
+              </div>
+            ) : (
+              // Enhanced structured format
+              <div className="grid md:grid-cols-2 gap-10">
+                <div className="space-y-8">
+                  {article.aiAnalysis.truthCheck && (
+                    <div>
+                      <h3 className="text-sm font-bold text-navy-900 uppercase tracking-widest mb-3 flex items-center">
+                        <span className="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
+                        What's True
+                      </h3>
+                      <p className="text-gray-700 leading-relaxed bg-green-50/50 p-4 rounded-sm border-l-2 border-green-500">
+                        {article.aiAnalysis.truthCheck}
+                      </p>
+                    </div>
+                  )}
 
-              {article.aiAnalysis.realImpact && (
-                <div>
-                  <h3 className="text-lg font-bold text-green-900 mb-2 flex items-center">
-                    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                    </svg>
-                    Real Impact
-                  </h3>
-                  <p className="text-green-800 leading-relaxed pl-7">
-                    {article.aiAnalysis.realImpact}
-                  </p>
+                  {article.aiAnalysis.spinDetection && (
+                    <div>
+                      <h3 className="text-sm font-bold text-navy-900 uppercase tracking-widest mb-3 flex items-center">
+                        <span className="w-2 h-2 bg-red-500 rounded-full mr-2"></span>
+                        Spin Detection
+                      </h3>
+                      <p className="text-gray-700 leading-relaxed bg-red-50/50 p-4 rounded-sm border-l-2 border-red-500">
+                        {article.aiAnalysis.spinDetection}
+                      </p>
+                    </div>
+                  )}
                 </div>
-              )}
 
-              {article.aiAnalysis.commonGround && (
-                <div>
-                  <h3 className="text-lg font-bold text-green-900 mb-2 flex items-center">
-                    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" />
-                    </svg>
-                    Common Ground
-                  </h3>
-                  <p className="text-green-800 leading-relaxed pl-7">
-                    {article.aiAnalysis.commonGround}
-                  </p>
-                </div>
-              )}
+                <div className="space-y-8">
+                  {article.aiAnalysis.realImpact && (
+                    <div>
+                      <h3 className="text-sm font-bold text-navy-900 uppercase tracking-widest mb-3 flex items-center">
+                        <span className="w-2 h-2 bg-blue-500 rounded-full mr-2"></span>
+                        Real Impact
+                      </h3>
+                      <p className="text-gray-700 leading-relaxed bg-blue-50/50 p-4 rounded-sm border-l-2 border-blue-500">
+                        {article.aiAnalysis.realImpact}
+                      </p>
+                    </div>
+                  )}
 
-              {article.aiAnalysis.biggerPicture && (
-                <div>
-                  <h3 className="text-lg font-bold text-green-900 mb-2 flex items-center">
-                    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-                    </svg>
-                    The Bigger Picture
-                  </h3>
-                  <p className="text-green-800 leading-relaxed pl-7">
-                    {article.aiAnalysis.biggerPicture}
-                  </p>
+                  {article.aiAnalysis.commonGround && (
+                    <div>
+                      <h3 className="text-sm font-bold text-navy-900 uppercase tracking-widest mb-3 flex items-center">
+                        <span className="w-2 h-2 bg-gold-500 rounded-full mr-2"></span>
+                        Common Ground
+                      </h3>
+                      <p className="text-gray-700 leading-relaxed bg-gold-50/30 p-4 rounded-sm border-l-2 border-gold-500">
+                        {article.aiAnalysis.commonGround}
+                      </p>
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
-          )}
+
+                {article.aiAnalysis.biggerPicture && (
+                  <div className="md:col-span-2 mt-4 pt-8 border-t border-gray-100">
+                    <h3 className="text-lg font-serif font-bold text-navy-900 mb-3">
+                      The Bigger Picture
+                    </h3>
+                    <p className="text-lg text-gray-600 leading-relaxed italic">
+                      {article.aiAnalysis.biggerPicture}
+                    </p>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
         </section>
 
         {/* Two-Column Comparison */}
-        <div className="grid lg:grid-cols-2 gap-8">
+        <div className="grid lg:grid-cols-2 gap-px bg-gray-200 border border-gray-200 rounded-sm overflow-hidden shadow-card">
           {/* Left Perspective */}
-          <article className="perspective-left rounded-xl overflow-hidden shadow-sm">
+          <article className="bg-white relative group">
+            <div className="absolute top-0 left-0 w-full h-1 bg-democrat"></div>
+
             {/* Header */}
-            <div className="bg-blue-100 px-6 py-4 border-b border-blue-200">
-              <div className="flex items-center justify-between mb-2">
-                <span className="source-left source-badge font-bold">
+            <div className="p-8 border-b border-gray-100 bg-gray-50/50">
+              <div className="flex items-center justify-between mb-4">
+                <span className="text-sm font-bold text-democrat uppercase tracking-wider flex items-center">
+                  <span className="w-2 h-2 bg-democrat rounded-full mr-2"></span>
                   {article.leftSource.outlet}
                 </span>
                 {article.leftSource.author && (
-                  <span className="text-sm text-blue-700 font-medium">
+                  <span className="text-xs text-gray-500 font-medium uppercase tracking-wide">
                     By {article.leftSource.author}
                   </span>
                 )}
               </div>
+              <h3 className="text-2xl font-serif font-bold text-navy-900 leading-tight group-hover:text-democrat transition-colors">
+                {article.leftSource.headline}
+              </h3>
             </div>
 
             {/* Image */}
             {article.leftSource.imageUrl && (
-              <div className="relative h-64 md:h-80 w-full bg-gray-200">
+              <div className="relative h-64 w-full bg-gray-200 grayscale group-hover:grayscale-0 transition-all duration-500">
                 <Image
                   src={article.leftSource.imageUrl}
                   alt={article.leftSource.headline}
@@ -341,20 +369,16 @@ export default function ArticlePage({
             )}
 
             {/* Content */}
-            <div className="p-6 md:p-8 bg-white">
-              <h3 className="text-2xl font-bold text-blue-900 mb-4 leading-tight">
-                {article.leftSource.headline}
-              </h3>
-
-              <div className="news-content text-blue-800 space-y-4 mb-6">
+            <div className="p-8">
+              <div className="news-content text-gray-700 space-y-4 mb-8 font-serif leading-relaxed">
                 {article.leftSource.fullContent ? (
                   article.leftSource.fullContent.split('\n\n').map((paragraph, index) => (
-                    <p key={index} className="leading-relaxed">
+                    <p key={index}>
                       {paragraph}
                     </p>
                   ))
                 ) : (
-                  <p className="leading-relaxed">{article.leftSource.summary}</p>
+                  <p>{article.leftSource.summary}</p>
                 )}
               </div>
 
@@ -362,7 +386,7 @@ export default function ArticlePage({
                 href={article.leftSource.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                className="inline-flex items-center text-sm font-bold text-democrat hover:text-navy-900 uppercase tracking-wide transition-colors"
               >
                 Read Original Article
                 <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -373,24 +397,30 @@ export default function ArticlePage({
           </article>
 
           {/* Right Perspective */}
-          <article className="perspective-right rounded-xl overflow-hidden shadow-sm">
+          <article className="bg-white relative group">
+            <div className="absolute top-0 left-0 w-full h-1 bg-republican"></div>
+
             {/* Header */}
-            <div className="bg-red-100 px-6 py-4 border-b border-red-200">
-              <div className="flex items-center justify-between mb-2">
-                <span className="source-right source-badge font-bold">
+            <div className="p-8 border-b border-gray-100 bg-gray-50/50">
+              <div className="flex items-center justify-between mb-4">
+                <span className="text-sm font-bold text-republican uppercase tracking-wider flex items-center">
+                  <span className="w-2 h-2 bg-republican rounded-full mr-2"></span>
                   {article.rightSource.outlet}
                 </span>
                 {article.rightSource.author && (
-                  <span className="text-sm text-red-700 font-medium">
+                  <span className="text-xs text-gray-500 font-medium uppercase tracking-wide">
                     By {article.rightSource.author}
                   </span>
                 )}
               </div>
+              <h3 className="text-2xl font-serif font-bold text-navy-900 leading-tight group-hover:text-republican transition-colors">
+                {article.rightSource.headline}
+              </h3>
             </div>
 
             {/* Image */}
             {article.rightSource.imageUrl && (
-              <div className="relative h-64 md:h-80 w-full bg-gray-200">
+              <div className="relative h-64 w-full bg-gray-200 grayscale group-hover:grayscale-0 transition-all duration-500">
                 <Image
                   src={article.rightSource.imageUrl}
                   alt={article.rightSource.headline}
@@ -403,20 +433,16 @@ export default function ArticlePage({
             )}
 
             {/* Content */}
-            <div className="p-6 md:p-8 bg-white">
-              <h3 className="text-2xl font-bold text-red-900 mb-4 leading-tight">
-                {article.rightSource.headline}
-              </h3>
-
-              <div className="news-content text-red-800 space-y-4 mb-6">
+            <div className="p-8">
+              <div className="news-content text-gray-700 space-y-4 mb-8 font-serif leading-relaxed">
                 {article.rightSource.fullContent ? (
                   article.rightSource.fullContent.split('\n\n').map((paragraph, index) => (
-                    <p key={index} className="leading-relaxed">
+                    <p key={index}>
                       {paragraph}
                     </p>
                   ))
                 ) : (
-                  <p className="leading-relaxed">{article.rightSource.summary}</p>
+                  <p>{article.rightSource.summary}</p>
                 )}
               </div>
 
@@ -424,7 +450,7 @@ export default function ArticlePage({
                 href={article.rightSource.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium"
+                className="inline-flex items-center text-sm font-bold text-republican hover:text-navy-900 uppercase tracking-wide transition-colors"
               >
                 Read Original Article
                 <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -436,52 +462,30 @@ export default function ArticlePage({
         </div>
 
         {/* Share Section */}
-        <section className="mt-12 pt-8 border-t border-gray-200">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-1">
-                Found this comparison helpful?
-              </h3>
-              <p className="text-gray-600">
-                Share it with others who value balanced news coverage
-              </p>
-            </div>
-
-            <div className="flex items-center gap-3">
-              <a
-                href={`mailto:?subject=${encodeURIComponent(article.title)}&body=${encodeURIComponent(`Check out this article comparison: ${article.title}\n\n${analysisSummary}\n\nRead more at Narrative News`)}`}
-                className="inline-flex items-center px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors"
-              >
-                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" />
-                </svg>
-                Share
-              </a>
-
-              <Link
-                href="/"
-                className="inline-flex items-center px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors"
-              >
-                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
-                </svg>
-                Save
-              </Link>
-            </div>
-          </div>
-        </section>
-
-        {/* Related Articles - Placeholder for future */}
-        <section className="mt-12 bg-white rounded-xl p-8 border border-gray-200">
-          <h3 className="text-2xl font-bold text-gray-900 mb-4">
-            More Comparisons
+        <section className="mt-16 pt-12 border-t border-gray-200 text-center">
+          <h3 className="text-xl font-serif font-bold text-navy-900 mb-4">
+            Share this analysis
           </h3>
-          <p className="text-gray-600 mb-4">
-            Explore other stories where we compare different perspectives
-          </p>
-          <Link href="/" className="btn-primary inline-block">
-            View All Stories
-          </Link>
+          <div className="flex items-center justify-center gap-4">
+            <a
+              href={`mailto:?subject=${encodeURIComponent(article.title)}&body=${encodeURIComponent(`Check out this article comparison: ${article.title}\n\n${analysisSummary}\n\nRead more at Narrative News`)}`}
+              className="inline-flex items-center px-6 py-3 bg-white border border-gray-200 hover:border-gold-500 text-navy-900 rounded-sm transition-colors shadow-sm font-medium"
+            >
+              <svg className="w-5 h-5 mr-2 text-gold-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+              Email
+            </a>
+
+            <button
+              className="inline-flex items-center px-6 py-3 bg-white border border-gray-200 hover:border-gold-500 text-navy-900 rounded-sm transition-colors shadow-sm font-medium"
+            >
+              <svg className="w-5 h-5 mr-2 text-gold-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" />
+              </svg>
+              Copy Link
+            </button>
+          </div>
         </section>
       </div>
     </div>

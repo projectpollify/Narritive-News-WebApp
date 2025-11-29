@@ -5,13 +5,13 @@ import { DatabaseService } from '@/lib/db'
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
-    
+
     const query = searchParams.get('q')
     const category = searchParams.get('category')
     const limit = parseInt(searchParams.get('limit') || '20')
     const offset = parseInt(searchParams.get('offset') || '0')
     const sortBy = searchParams.get('sortBy') || 'relevance' // relevance, date, views
-    
+
     // Validate query
     if (!query || query.trim().length < 2) {
       return NextResponse.json(
@@ -19,9 +19,9 @@ export async function GET(request: NextRequest) {
         { status: 400 }
       )
     }
-    
+
     const searchTerm = query.trim().toLowerCase()
-    
+
     // Get all articles (in production, you'd want more efficient search)
     const filters = {
       category: category && category !== 'all' ? category : undefined,
@@ -29,14 +29,14 @@ export async function GET(request: NextRequest) {
       limit: 100, // Get more for searching
       offset: 0
     }
-    
+
     const allArticles = await DatabaseService.getArticles(filters)
-    
+
     // Simple text search implementation
     const searchResults = allArticles.filter(article => {
       const titleMatch = article.title.toLowerCase().includes(searchTerm)
       const analysisMatch = article.aiAnalysis.toLowerCase().includes(searchTerm)
-      const tagMatch = Array.isArray(article.tags) && article.tags.some(tag =>
+      const tagMatch = Array.isArray(article.tags) && article.tags.some((tag: string) =>
         typeof tag === 'string' && tag.toLowerCase().includes(searchTerm)
       )
       const leftHeadlineMatch = article.leftSource.headline.toLowerCase().includes(searchTerm)
@@ -45,44 +45,44 @@ export async function GET(request: NextRequest) {
       const rightSummaryMatch = article.rightSource.summary.toLowerCase().includes(searchTerm)
 
       return titleMatch || analysisMatch || tagMatch ||
-             leftHeadlineMatch || rightHeadlineMatch ||
-             leftSummaryMatch || rightSummaryMatch
+        leftHeadlineMatch || rightHeadlineMatch ||
+        leftSummaryMatch || rightSummaryMatch
     })
-    
+
     // Calculate relevance scores
     const scoredResults = searchResults.map(article => {
       let score = 0
-      
+
       // Title matches are most important
       if (article.title.toLowerCase().includes(searchTerm)) score += 10
 
       // Tag matches are also important
-      if (Array.isArray(article.tags) && article.tags.some(tag =>
+      if (Array.isArray(article.tags) && article.tags.some((tag: string) =>
         typeof tag === 'string' && tag.toLowerCase().includes(searchTerm)
       )) score += 8
-      
+
       // AI analysis matches
       if (article.aiAnalysis.toLowerCase().includes(searchTerm)) score += 5
-      
+
       // Source headline matches
       if (article.leftSource.headline.toLowerCase().includes(searchTerm)) score += 3
       if (article.rightSource.headline.toLowerCase().includes(searchTerm)) score += 3
-      
+
       // Summary matches
       if (article.leftSource.summary.toLowerCase().includes(searchTerm)) score += 2
       if (article.rightSource.summary.toLowerCase().includes(searchTerm)) score += 2
-      
+
       // Boost recent articles
       const daysSincePublished = (Date.now() - article.publishedAt.getTime()) / (1000 * 60 * 60 * 24)
       if (daysSincePublished < 7) score += 2
       if (daysSincePublished < 1) score += 3
-      
+
       // Boost popular articles
       score += Math.log(article.viewCount + 1)
-      
+
       return { ...article, relevanceScore: score }
     })
-    
+
     // Sort results
     let sortedResults = scoredResults
     switch (sortBy) {
@@ -97,10 +97,10 @@ export async function GET(request: NextRequest) {
         sortedResults.sort((a, b) => b.relevanceScore - a.relevanceScore)
         break
     }
-    
+
     // Apply pagination
     const paginatedResults = sortedResults.slice(offset, offset + limit)
-    
+
     // Transform for frontend
     const transformedResults = paginatedResults.map(article => ({
       id: article.id,
@@ -125,7 +125,7 @@ export async function GET(request: NextRequest) {
         url: article.rightSource.url
       }
     }))
-    
+
     return NextResponse.json({
       success: true,
       data: {
@@ -141,7 +141,7 @@ export async function GET(request: NextRequest) {
         }
       }
     })
-    
+
   } catch (error: any) {
     console.error('❌ Search API error:', error)
     return NextResponse.json(
@@ -155,41 +155,41 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const { query } = await request.json()
-    
+
     if (!query || query.length < 2) {
       return NextResponse.json({
         success: true,
         data: { suggestions: [] }
       })
     }
-    
+
     // Get popular search terms (in production, you'd maintain a search terms table)
     const popularTerms = [
-      'Federal Reserve', 'Interest Rates', 'Climate Change', 'Election', 
-      'Congress', 'Senate', 'Healthcare', 'Technology', 'Trade', 
+      'Federal Reserve', 'Interest Rates', 'Climate Change', 'Election',
+      'Congress', 'Senate', 'Healthcare', 'Technology', 'Trade',
       'Immigration', 'Economy', 'Business', 'Politics', 'International'
     ]
-    
+
     const suggestions = popularTerms
       .filter(term => term.toLowerCase().includes(query.toLowerCase()))
       .slice(0, 8)
-    
+
     // Also get recent article titles that match
     const recentArticles = await DatabaseService.getArticles({ limit: 50 })
     const titleSuggestions = recentArticles
       .filter(article => article.title.toLowerCase().includes(query.toLowerCase()))
       .map(article => article.title)
       .slice(0, 5)
-    
+
     const allSuggestions = Array.from(new Set([...suggestions, ...titleSuggestions]))
-    
+
     return NextResponse.json({
       success: true,
-      data: { 
+      data: {
         suggestions: allSuggestions.slice(0, 10)
       }
     })
-    
+
   } catch (error: any) {
     console.error('❌ Search suggestions error:', error)
     return NextResponse.json(

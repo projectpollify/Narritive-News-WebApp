@@ -5,14 +5,14 @@ import { DatabaseService } from '@/lib/db'
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
-    
+
     const category = searchParams.get('category')
     const limit = parseInt(searchParams.get('limit') || '10')
     const offset = parseInt(searchParams.get('offset') || '0')
     const sortBy = searchParams.get('sortBy') || 'publishedAt'
     const sortOrder = searchParams.get('sortOrder') || 'desc'
     const search = searchParams.get('search')
-    
+
     // Validate parameters
     if (limit > 50) {
       return NextResponse.json(
@@ -20,21 +20,21 @@ export async function GET(request: NextRequest) {
         { status: 400 }
       )
     }
-    
+
     // Build filters
     const filters: any = {
       limit,
       offset,
       published: true
     }
-    
+
     if (category && category !== 'all') {
       filters.category = category
     }
-    
+
     // Get articles
     const articles = await DatabaseService.getArticles(filters)
-    
+
     // Filter by search term if provided
     let filteredArticles = articles
     if (search) {
@@ -42,12 +42,12 @@ export async function GET(request: NextRequest) {
       filteredArticles = articles.filter(article =>
         article.title.toLowerCase().includes(searchLower) ||
         article.aiAnalysis.toLowerCase().includes(searchLower) ||
-        (Array.isArray(article.tags) && article.tags.some(tag =>
+        (Array.isArray(article.tags) && article.tags.some((tag: string) =>
           typeof tag === 'string' && tag.toLowerCase().includes(searchLower)
         ))
       )
     }
-    
+
     // Transform data for frontend
     const transformedArticles = filteredArticles.map(article => ({
       id: article.id,
@@ -75,13 +75,13 @@ export async function GET(request: NextRequest) {
         publishedAt: article.rightSource.publishedAt?.toISOString()
       }
     }))
-    
+
     // Get total count for pagination
     const totalCount = await DatabaseService.getArticlesCount({
       category: category && category !== 'all' ? category : undefined,
       published: true
     })
-    
+
     return NextResponse.json({
       success: true,
       data: transformedArticles,
@@ -94,7 +94,7 @@ export async function GET(request: NextRequest) {
         currentPage: Math.floor(offset / limit) + 1
       }
     })
-    
+
   } catch (error: any) {
     console.error('❌ Articles API error:', error)
     return NextResponse.json(
@@ -108,9 +108,9 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    
+
     const { title, category, aiAnalysis, leftSource, rightSource, tags = [] } = body
-    
+
     // Validate required fields
     if (!title || !category || !aiAnalysis || !leftSource || !rightSource) {
       return NextResponse.json(
@@ -118,10 +118,10 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       )
     }
-    
+
     // Generate slug
     const slug = await DatabaseService.generateUniqueSlug(title)
-    
+
     // Create article
     const article = await DatabaseService.createArticle({
       title,
@@ -141,7 +141,7 @@ export async function POST(request: NextRequest) {
         publishedAt: new Date(rightSource.publishedAt || Date.now())
       }
     })
-    
+
     return NextResponse.json({
       success: true,
       data: {
@@ -150,7 +150,7 @@ export async function POST(request: NextRequest) {
         title: article.title
       }
     }, { status: 201 })
-    
+
   } catch (error: any) {
     console.error('❌ Create article error:', error)
     return NextResponse.json(

@@ -58,6 +58,11 @@ model Article {
   viewCount   Int      @default(0)
   isPublished Boolean  @default(false)
 
+  // Blockchain Verification
+  contentHash      String?   // SHA-256 hash of the content
+  onChainTx        String?   // Blockchain transaction ID
+  onChainTimestamp DateTime? // When it was anchored
+
   // Relationships
   leftSource  NewsSource @relation("LeftSource", fields: [leftSourceId], references: [id], onDelete: Cascade)
   rightSource NewsSource @relation("RightSource", fields: [rightSourceId], references: [id], onDelete: Cascade)

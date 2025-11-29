@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client'
 import { CacheService, CacheKeys } from '@/lib/cache/redis'
+import { BlockchainClient } from '@/lib/blockchain/client'
 
 // Prevent multiple instances of Prisma Client in development
 const globalForPrisma = globalThis as unknown as {
@@ -17,7 +18,7 @@ export const db = prisma
 
 // Database utility functions
 export class DatabaseService {
-  
+
   // Article operations
   static async createArticle(data: {
     title: string
@@ -47,6 +48,17 @@ export class DatabaseService {
       bias: 'LEFT' | 'RIGHT' | 'CENTER'
     }
   }) {
+    // Generate blockchain hash and anchor
+    const contentHash = BlockchainClient.hashArticle({
+      title: data.title,
+      content: data.aiAnalysis,
+      publishedAt: data.publishedAt
+    })
+
+    // In a real app, we might want to do this asynchronously or via a queue
+    // to avoid delaying the response, but for now we'll await it
+    const { transactionId, timestamp } = await BlockchainClient.anchorToBlockchain(contentHash)
+
     const article = await prisma.article.create({
       data: {
         title: data.title,
@@ -56,6 +68,9 @@ export class DatabaseService {
         tags: data.tags || [],
         publishedAt: data.publishedAt,
         isPublished: true,
+        contentHash,
+        onChainTx: transactionId,
+        onChainTimestamp: timestamp,
         leftSource: {
           create: {
             outlet: data.leftSource.outlet,
@@ -105,7 +120,7 @@ export class DatabaseService {
 
     // Try cache first
     const cacheKey = CacheKeys.articlesList(category, limit, offset)
-    const cached = await CacheService.get(cacheKey)
+    const cached = await CacheService.get<any[]>(cacheKey)
     if (cached) {
       return cached
     }
@@ -136,7 +151,7 @@ export class DatabaseService {
   static async getArticleBySlug(slug: string) {
     // Try cache first
     const cacheKey = CacheKeys.articleDetail(slug)
-    const cached = await CacheService.get(cacheKey)
+    const cached = await CacheService.get<any>(cacheKey)
     if (cached) {
       // Still increment view count even for cached responses
       await prisma.article.update({
@@ -283,7 +298,7 @@ export class DatabaseService {
     const today = new Date()
     today.setHours(0, 0, 0, 0)
 
-    const updateData = sourceType === 'left' 
+    const updateData = sourceType === 'left'
       ? { leftClicks: { increment: 1 } }
       : { rightClicks: { increment: 1 } }
 
@@ -349,7 +364,7 @@ export class DatabaseService {
     published?: boolean
   }) {
     const { category, published = true } = filters || {}
-    
+
     return await prisma.article.count({
       where: {
         ...(category && { category }),
