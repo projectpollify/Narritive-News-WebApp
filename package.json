@@ -32,6 +32,8 @@
   "dependencies": {
     "@headlessui/react": "^1.7.17",
     "@heroicons/react": "^2.0.18",
+    "@irys/upload": "^0.0.15",
+    "@irys/upload-ethereum": "^0.0.16",
     "@next-auth/prisma-adapter": "^1.0.7",
     "@next/bundle-analyzer": "^14.2.33",
     "@prisma/client": "^5.7.1",

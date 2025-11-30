@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { formatDistanceToNow } from 'date-fns'
+import { NEWSROOM } from '@/lib/services/ai'
 
 interface EnhancedAnalysis {
   summary: string
@@ -15,6 +16,7 @@ export interface Article {
   id: string
   title: string
   aiAnalysis: string | EnhancedAnalysis
+  personaId?: string // New field for the reporter
   leftSource: {
     outlet: string
     headline: string
@@ -45,6 +47,9 @@ export function ArticleCard({ article }: ArticleCardProps) {
     ? article.aiAnalysis
     : article.aiAnalysis.summary
 
+  // Get the reporter persona (default to Voice of Reason if missing)
+  const persona = article.personaId ? NEWSROOM[article.personaId] : NEWSROOM['voice-of-reason']
+
   return (
     <article className="bg-white rounded-sm shadow-card border border-gray-100 overflow-hidden hover:shadow-xl transition-all duration-300 group">
       <div className="p-8">
@@ -65,15 +70,17 @@ export function ArticleCard({ article }: ArticleCardProps) {
           </h2>
         </Link>
 
-        {/* AI Analysis Box */}
-        <div className="bg-paper rounded-sm p-6 mb-8 border-l-2 border-gold-500 relative">
+        {/* AI Analysis Box (The Reporter) */}
+        <div className={`bg-paper rounded-sm p-6 mb-8 border-l-2 ${persona.color.replace('text-', 'border-')} relative`}>
           <div className="absolute -top-3 left-4 bg-white px-2 py-1 border border-gray-100 shadow-sm rounded-sm">
             <div className="flex items-center space-x-2">
-              <div className="w-2 h-2 bg-gold-500 rounded-full animate-pulse"></div>
-              <span className="text-xs font-bold text-navy-900 uppercase tracking-wider">AI Analysis</span>
+              <span className="text-lg">{persona.avatar}</span>
+              <span className={`text-xs font-bold ${persona.color} uppercase tracking-wider`}>
+                {persona.name}
+              </span>
             </div>
           </div>
-          <p className="text-gray-600 leading-relaxed font-sans text-lg italic">
+          <p className="text-gray-600 leading-relaxed font-sans text-lg italic mt-2">
             "{analysisSummary}"
           </p>
         </div>

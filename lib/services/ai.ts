@@ -62,9 +62,102 @@ export interface EnhancedAIAnalysis {
   readingTime: number
 }
 
+// AI Reporter Persona Definition
+export interface ReporterPersona {
+  id: string
+  name: string
+  role: string
+  avatar: string // Emoji or icon name
+  color: string // Tailwind color class
+  systemPrompt: string
+  description: string
+}
+
+// The Newsroom: Registry of AI Reporters
+export const NEWSROOM: Record<string, ReporterPersona> = {
+  'voice-of-reason': {
+    id: 'voice-of-reason',
+    name: 'Atticus Noble',
+    role: 'Editor-in-Chief',
+    avatar: '⚖️',
+    color: 'text-gold-600',
+    description: 'Synthesizes perspectives with historical context and calm authority.',
+    systemPrompt: `You are "Atticus Noble," the Editor-in-Chief of Narrative News.
+    
+Your Goal: To cut through the noise and provide a calm, objective synthesis of the news.
+Your Tone: Authoritative, balanced, historical, and wise. Like a trusted elder statesman or a seasoned historian.
+
+Guidelines:
+1. Ground your analysis in HISTORY. "Has this happened before?"
+2. Synthesize the Truth. Don't just list sides; explain the reality between them.
+3. Be Objective. Never take a political side.
+4. Use the "Amber" metaphor: You are preserving the truth for posterity.
+
+Analysis Framework:
+- What is indisputably true?
+- How is each side spinning this?
+- What is the historical precedent?
+- What is the synthesis/common ground?`
+  },
+  'historian': {
+    id: 'historian',
+    name: 'Sebastian Lore',
+    role: 'Senior Correspondent',
+    avatar: '📜',
+    color: 'text-amber-700',
+    description: 'Analyzes current events through the lens of history and precedent.',
+    systemPrompt: `You are "Sebastian Lore," a senior correspondent for Narrative News.
+
+Your Goal: To explain current events by comparing them to the past.
+Your Tone: Academic, insightful, narrative-driven.
+
+Guidelines:
+1. ALWAYS cite a specific historical parallel. "This reminds us of the panic of 1907..." or "Similar rhetoric was used during..."
+2. Focus on cycles of history.
+3. Ignore the daily noise; focus on the long arc of time.
+4. Explain *why* this matters in the context of decades, not days.`
+  },
+  'economist': {
+    id: 'economist',
+    name: 'Victoria Sterling',
+    role: 'Financial Analyst',
+    avatar: '📈',
+    color: 'text-emerald-600',
+    description: 'Follows the money to explain incentives and market forces.',
+    systemPrompt: `You are "Victoria Sterling," a financial analyst for Narrative News.
+
+Your Goal: To explain the news by following the money.
+Your Tone: Analytical, data-driven, pragmatic.
+
+Guidelines:
+1. Focus on INCENTIVES. Who benefits financially?
+2. Analyze the economic impact on regular families (inflation, jobs, housing).
+3. Ignore political rhetoric; look at the numbers.
+4. Explain the trade-offs. "There are no solutions, only trade-offs."`
+  },
+  'skeptic': {
+    id: 'skeptic',
+    name: 'Jax Harper',
+    role: 'Investigative Reporter',
+    avatar: '🧐',
+    color: 'text-purple-600',
+    description: 'Questions narratives and looks for what is being hidden.',
+    systemPrompt: `You are "Jax Harper," an investigative reporter for Narrative News.
+
+Your Goal: To question the official narrative from BOTH sides.
+Your Tone: Sharp, questioning, slightly cynical but truth-seeking.
+
+Guidelines:
+1. Ask: "What are they NOT telling us?"
+2. Point out logical fallacies and hypocrisy on both sides.
+3. Look for the "quiet part" that isn't being said aloud.
+4. Be the devil's advocate.`
+  }
+}
+
 export class AIService {
 
-  // Enhanced analysis with W5 breakdowns for each section
+  // Enhanced analysis with Persona support
   static async analyzeArticlesEnhanced(
     leftArticle: {
       title: string
@@ -80,27 +173,30 @@ export class AIService {
       summary: string
       publishedAt?: string
     },
-    includeW5 = true // Toggle W5 deep-dive generation
+    personaId: string = 'voice-of-reason', // Default to Voice of Reason
+    includeW5 = true
   ): Promise<EnhancedAIAnalysis> {
 
-    try {
-      console.log(`🤖 Enhanced AI analysis: ${leftArticle.outlet} vs ${rightArticle.outlet} (W5: ${includeW5})`)
+    const persona = NEWSROOM[personaId] || NEWSROOM['voice-of-reason']
 
-      const prompt = this.createEnhancedAnalysisPrompt(leftArticle, rightArticle, includeW5)
+    try {
+      console.log(`🤖 Enhanced AI analysis by ${persona.name}: ${leftArticle.outlet} vs ${rightArticle.outlet} (W5: ${includeW5})`)
+
+      const prompt = this.createEnhancedAnalysisPrompt(leftArticle, rightArticle, includeW5, persona)
 
       const completion = await openai.chat.completions.create({
         model: "gpt-4",
         messages: [
           {
             role: "system",
-            content: this.getEnhancedSystemPrompt()
+            content: persona.systemPrompt // Use the specific persona's prompt
           },
           {
             role: "user",
             content: prompt
           }
         ],
-        max_tokens: includeW5 ? 3000 : 1800, // More tokens for W5 analysis
+        max_tokens: includeW5 ? 3000 : 1800,
         temperature: 0.3,
         presence_penalty: 0.1,
         frequency_penalty: 0.1
@@ -129,7 +225,7 @@ export class AIService {
         confidenceScore: this.calculateConfidenceScore(leftArticle, rightArticle)
       }
 
-      console.log(`✅ Enhanced analysis complete (${totalWords} words, ${readingTime} min read)`)
+      console.log(`✅ Analysis by ${persona.name} complete (${totalWords} words, ${readingTime} min read)`)
       return result
 
     } catch (error) {
@@ -138,75 +234,21 @@ export class AIService {
     }
   }
 
-  // Main function to analyze two articles (legacy method)
+  // Legacy method (keeps existing functionality working)
   static async analyzeArticles(
-    leftArticle: {
-      title: string
-      content: string
-      outlet: string
-      summary: string
-    },
-    rightArticle: {
-      title: string
-      content: string
-      outlet: string
-      summary: string
-    }
+    leftArticle: any,
+    rightArticle: any
   ): Promise<AIAnalysisResult> {
+    // Redirect legacy calls to the new system using Voice of Reason
+    const enhanced = await this.analyzeArticlesEnhanced(leftArticle, rightArticle, 'voice-of-reason', false)
 
-    try {
-      console.log(`🤖 Analyzing articles from ${leftArticle.outlet} vs ${rightArticle.outlet}`)
-
-      // Create the analysis prompt
-      const prompt = this.createAnalysisPrompt(leftArticle, rightArticle)
-
-      // Get AI analysis
-      const completion = await openai.chat.completions.create({
-        model: "gpt-4",
-        messages: [
-          {
-            role: "system",
-            content: this.getSystemPrompt()
-          },
-          {
-            role: "user",
-            content: prompt
-          }
-        ],
-        max_tokens: 1500,
-        temperature: 0.3, // Lower temperature for more consistent analysis
-        presence_penalty: 0.1,
-        frequency_penalty: 0.1
-      })
-
-      const rawResponse = completion.choices[0].message.content
-
-      if (!rawResponse) {
-        throw new Error('No content in AI response')
-      }
-
-      // Parse the structured response
-      const parsedResult = this.parseAIResponse(rawResponse)
-
-      // Calculate reading time (average 200 words per minute)
-      const wordCount = parsedResult.analysis.split(/\s+/).length
-      const readingTime = Math.ceil(wordCount / 200)
-
-      const result: AIAnalysisResult = {
-        ...parsedResult,
-        readingTime,
-        confidenceScore: this.calculateConfidenceScore(leftArticle, rightArticle)
-      }
-
-      console.log(`✅ AI analysis complete (${wordCount} words, ${readingTime} min read)`)
-
-      return result
-
-    } catch (error) {
-      console.error('❌ AI analysis failed:', error)
-
-      // Fallback analysis if AI fails
-      return this.createFallbackAnalysis(leftArticle, rightArticle)
+    // Convert EnhancedAIAnalysis back to legacy AIAnalysisResult format
+    return {
+      analysis: enhanced.executiveSummary + '\n\n' + enhanced.biggerPicture.summary,
+      keyDifferences: enhanced.keyDifferences,
+      possibleMotives: enhanced.possibleMotives,
+      confidenceScore: enhanced.confidenceScore,
+      readingTime: enhanced.readingTime
     }
   }
 
@@ -477,36 +519,9 @@ Your analysis should educate readers about media literacy and help them become m
     }
   }
 
-  // Enhanced system prompt for W5 analysis
-  private static getEnhancedSystemPrompt(): string {
-    return `You are an expert media analyst for Narrative News, specializing in objective, multi-perspective news analysis.
-
-Your role is to analyze how left-leaning and right-leaning news outlets frame the same stories differently, using a structured approach that helps readers understand multiple perspectives without bias.
-
-Analysis Framework:
-1. What's True - Facts both sides agree on
-2. What's Spin - How each side frames the story
-3. Real Impact - Who is affected and how
-4. Common Ground - Shared concerns despite different framing
-5. The Bigger Picture - Context and broader implications
-
-For each section, you may be asked to provide W5 Analysis (Who, What, When, Where, Why) to help readers dig deeper into specific aspects.
-
-Guidelines:
-- Be objective and balanced - never favor one perspective
-- Use clear, accessible language for general audiences
-- Focus on understanding WHY outlets frame stories differently
-- Highlight media literacy lessons
-- Be specific with examples from the articles
-- Explain editorial choices and their implications
-
-Your analysis should educate readers about media framing and help them become more discerning news consumers.`
-  }
-
   // Create enhanced analysis prompt with optional W5 sections
-  private static createEnhancedAnalysisPrompt(leftArticle: any, rightArticle: any, includeW5: boolean): string {
+  private static createEnhancedAnalysisPrompt(leftArticle: any, rightArticle: any, includeW5: boolean, persona: ReporterPersona): string {
     const w5Instructions = includeW5 ? `
-
 For EACH of the five sections, also provide W5 Analysis:
 - who: Who is affected/involved? (50-100 words)
 - what: What exactly happened? (50-100 words)
@@ -514,7 +529,10 @@ For EACH of the five sections, also provide W5 Analysis:
 - where: Where is this happening and what's the geographical/political context? (50-100 words)
 - why: Why does this matter and what are the motivations? (50-100 words)` : ''
 
-    return `Analyze these two articles covering the same story from different perspectives:
+    return `Analyze these two articles covering the same story from different perspectives.
+    
+YOUR PERSONA: You are ${persona.name}. ${persona.description}
+Apply your specific lens (History, Economics, Skepticism, or Reason) to this analysis.
 
 **LEFT-LEANING: ${leftArticle.outlet}**
 Title: ${leftArticle.title}
@@ -529,44 +547,43 @@ Content: ${rightArticle.content.slice(0, 2500)}
 Provide analysis in this EXACT JSON format:
 
 {
-  "executiveSummary": "Neutral 2-3 sentence overview of the story and key framing differences",
+  "executiveSummary": "Your 2-3 sentence overview from the perspective of ${persona.name}",
   "whatIsTrue": {
-    "summary": "Concise paragraph: What facts do both sides agree on?",${includeW5 ? '\n    "w5Details": {\n      "who": "Who is involved/affected?",\n      "what": "What exactly happened?",\n      "when": "When and what timeline?",\n      "where": "Where and what context?",\n      "why": "Why does this matter?"\n    }' : ''}
+    "summary": "Concise paragraph: What facts do both sides agree on?",${includeW5 ? '\n    "w5Details": {\n      "who": "Who is involved?",\n      "what": "What happened?",\n      "when": "When?",\n      "where": "Where?",\n      "why": "Why?"\n    }' : ''}
   },
   "whatIsSpin": {
-    "summary": "Concise paragraph: How does each side frame/spin this story? What language choices reveal bias?",${includeW5 ? '\n    "w5Details": {\n      "who": "Who benefits from each narrative?",\n      "what": "What specific framing techniques are used?",\n      "when": "When do these framing patterns typically emerge?",\n      "where": "Where do we see these editorial choices most clearly?",\n      "why": "Why might each outlet choose this framing?"\n    }' : ''}
+    "summary": "Concise paragraph: How does each side frame/spin this?",${includeW5 ? '\n    "w5Details": {\n      "who": "Who benefits?",\n      "what": "What techniques?",\n      "when": "When?",\n      "where": "Where?",\n      "why": "Why?"\n    }' : ''}
   },
   "realImpact": {
-    "summary": "Concise paragraph: What are the real-world consequences for families, businesses, and communities?",${includeW5 ? '\n    "w5Details": {\n      "who": "Who will be directly affected?",\n      "what": "What specific impacts will occur?",\n      "when": "When will these impacts be felt?",\n      "where": "Where will impacts be most significant?",\n      "why": "Why do these impacts matter long-term?"\n    }' : ''}
+    "summary": "Concise paragraph: What are the real-world consequences?",${includeW5 ? '\n    "w5Details": {\n      "who": "Who is affected?",\n      "what": "What impacts?",\n      "when": "When?",\n      "where": "Where?",\n      "why": "Why?"\n    }' : ''}
   },
   "commonGround": {
-    "summary": "Concise paragraph: What do both sides actually want? Despite different framing, what shared concerns exist?",${includeW5 ? '\n    "w5Details": {\n      "who": "Who shares these concerns?",\n      "what": "What common goals exist?",\n      "when": "When do both sides align?",\n      "where": "Where is there potential for agreement?",\n      "why": "Why does common ground matter?"\n    }' : ''}
+    "summary": "Concise paragraph: What shared concerns exist?",${includeW5 ? '\n    "w5Details": {\n      "who": "Who agrees?",\n      "what": "What goals?",\n      "when": "When?",\n      "where": "Where?",\n      "why": "Why?"\n    }' : ''}
   },
   "biggerPicture": {
-    "summary": "Concise paragraph: What broader context helps explain these competing perspectives? What's really at stake?",${includeW5 ? '\n    "w5Details": {\n      "who": "Who has historical/political stakes?",\n      "what": "What larger patterns does this represent?",\n      "when": "When did these competing narratives emerge?",\n      "where": "Where does this fit in broader debates?",\n      "why": "Why do these worldviews differ so much?"\n    }' : ''}
+    "summary": "Concise paragraph: What is the broader context?",${includeW5 ? '\n    "w5Details": {\n      "who": "Who has stakes?",\n      "what": "What patterns?",\n      "when": "When did this start?",\n      "where": "Where does this fit?",\n      "why": "Why does it matter?"\n    }' : ''}
   },
   "leftPerspective": {
-    "keyPoints": ["point1", "point2", "point3"],
-    "framing": "How they frame the story",
-    "tone": "Emotional tone",
-    "emphasis": ["emphasis1", "emphasis2"]
+    "keyPoints": ["point1", "point2"],
+    "framing": "How they frame it",
+    "tone": "Tone",
+    "emphasis": ["emphasis1"]
   },
   "rightPerspective": {
-    "keyPoints": ["point1", "point2", "point3"],
-    "framing": "How they frame the story",
-    "tone": "Emotional tone",
-    "emphasis": ["emphasis1", "emphasis2"]
+    "keyPoints": ["point1", "point2"],
+    "framing": "How they frame it",
+    "tone": "Tone",
+    "emphasis": ["emphasis1"]
   },
-  "keyDifferences": ["difference1", "difference2", "difference3"],
+  "keyDifferences": ["diff1", "diff2"],
   "biasIndicators": {
-    "languagePatterns": ["pattern1", "pattern2"],
-    "omissions": ["omission1", "omission2"],
-    "emphasisDifferences": ["diff1", "diff2"]
+    "languagePatterns": ["pattern1"],
+    "omissions": ["omission1"],
+    "emphasisDifferences": ["diff1"]
   },
   "possibleMotives": ["motive1", "motive2"]
 }${w5Instructions}
-
-Focus on helping readers understand BOTH perspectives without judgment. Be specific with examples from the articles.`
+`
   }
 
   // Parse enhanced analysis response

@@ -3,6 +3,7 @@ import Image from 'next/image'
 import { formatDistanceToNow } from 'date-fns'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
+import { NEWSROOM } from '@/lib/services/ai'
 
 // Type definitions
 interface NewsSource {
@@ -35,49 +36,83 @@ interface Article {
   contentHash?: string
   onChainTx?: string
   onChainTimestamp?: string
+  personaId?: string // New field for the reporter
 }
 
 // Mock data - same as homepage (will be replaced with API/database later)
 const mockArticles: Article[] = [
   {
     id: '1',
-    title: 'Federal Reserve Announces Interest Rate Decision',
-    aiAnalysis: {
-      summary: 'Analysis reveals significant differences in how outlets frame the economic impact, with conservative sources emphasizing inflation concerns while liberal sources focus on employment effects.',
-      truthCheck: 'Both sides agree: The Fed cut rates by 0.25%, inflation has cooled to 2.4% from peak levels, and unemployment ticked up to 4.1%. These are facts.',
-      spinDetection: 'CNN frames this as "supporting struggling workers" while Fox calls it "slashing rates" and "reigniting dangerous inflation." Notice the word choices: struggling vs dangerous, support vs slash. CNN emphasizes job losses; Fox emphasizes inflation risks. Both are cherry-picking which economic indicator to focus on.',
-      realImpact: 'For your family: Lower mortgage and credit card rates if you\'re borrowing. For your savings: Lower returns on savings accounts. For small business owners: Easier to get loans to expand. For retirees on fixed income: Could hurt if inflation returns. The tradeoff is real—cheaper borrowing now vs potential inflation later.',
-      commonGround: 'Both sides actually want the same thing: a strong economy with stable prices and good jobs. They just disagree on which risk is bigger right now—recession or inflation. Even the Fed is divided (one member dissented).',
-      biggerPicture: 'This isn\'t really about left vs right—it\'s about competing economic priorities. The Fed is trying to thread a needle between two risks. Your family feels both: job security matters, but so does the cost of groceries. Both perspectives highlight real concerns. The question isn\'t who\'s right, but which risk you\'re more worried about for your household.'
-    },
+    title: 'The Great Divide: How Media Polarization is Reshaping Reality',
+    aiAnalysis: `There's a peculiar phenomenon happening in living rooms, coffee shops, and dinner tables across the country. Two people can witness the same event, read about the same news story, and walk away with entirely different understandings of what actually happened. This isn't a failure of perception—it's the predictable outcome of a media landscape that has fractured into parallel universes, each with its own version of truth.
+
+### The Same Story, Two Worlds
+
+Consider how a single policy announcement plays out across the media spectrum. On one channel, it's framed as a bold step toward progress, supported by expert analysis and hopeful projections. Switch to another, and the same announcement becomes a reckless overreach, dissected by different experts who predict dire consequences. The facts remain identical. The reality presented does not.
+
+This divergence goes beyond traditional editorial bias. We've entered an era where media outlets don't just interpret events differently—they increasingly select which events matter at all. A protest that dominates one network's coverage for days may receive only a passing mention on another. A scandal that consumes one media ecosystem might be entirely absent from another. The result is that consumers of different media don't just disagree on opinions; they disagree on what is happening in the world.
+
+### The Architecture of Division
+
+How did we arrive here? The answer lies in a combination of technological disruption, economic incentives, and human psychology.
+
+The collapse of local news created a vacuum that national, partisan outlets rushed to fill. When your local paper folded, it took with it coverage of school boards, city councils, and community events—the shared civic experiences that gave neighbors common ground. What replaced it was national programming that sorted audiences not by geography but by ideology.
+
+The economics of attention accelerated this sorting. In a fragmented media market, the surest path to audience loyalty is emotional engagement. Outrage, fear, and tribal validation keep viewers watching and clicking. Nuance and complexity, by contrast, send them searching for clearer narratives elsewhere. Media organizations didn't conspire to divide the public—they simply followed the incentives, and the incentives rewarded polarization.
+
+Social media amplified these dynamics exponentially. Algorithms designed to maximize engagement learned quickly that conflict performs better than consensus. The platforms became sorting machines, serving users content that confirmed their existing beliefs while hiding perspectives that might challenge them. Each scroll reinforced the user's worldview while making opposing views seem not just wrong but incomprehensible.
+
+### Living in Different Realities
+
+The consequences extend far beyond political disagreement. When communities consume entirely different information diets, they lose the shared foundation necessary for democratic deliberation. Compromise becomes impossible when each side believes the other is operating from fabricated facts. Trust erodes—not just in institutions but in the very possibility of objective truth.
+
+Families fracture along these lines. Thanksgiving dinners become minefields not because relatives hold different values but because they literally cannot agree on what has happened in the world. One family member's reliable news source is another's propaganda outlet. The argument isn't about interpretation; it's about reality itself.
+
+Perhaps most troubling is how this polarization reshapes perception itself. Psychological research consistently shows that partisan identity now influences how people process basic factual information. Show partisans the same economic data, and their assessment of whether the economy is improving or declining tracks almost perfectly with whether their preferred party holds power. The facts haven't changed. The filter through which facts are processed has.
+
+### The Feedback Loop of Distrust
+
+Media polarization creates its own self-reinforcing cycle. As trust in mainstream sources declines, audiences seek alternatives that confirm their suspicions about institutional bias. These alternatives, often operating with fewer journalistic standards, provide the validation audiences crave while deepening their distrust of traditional media. Each side points to the other's media diet as evidence of manipulation, never considering that the same accusation is being leveled in reverse.
+
+This feedback loop has proven remarkably resistant to correction. Fact-checking, once hoped to be a remedy, has itself become polarized. Audiences dismiss fact-checks that contradict their beliefs as further evidence of bias. The very act of attempting to establish shared facts is now viewed through partisan lenses.
+
+### Finding Common Ground
+
+Is there a path forward? Some observers place hope in generational change, noting that younger audiences consume media differently and may develop new norms around information evaluation. Others point to emerging platforms designed to bridge divides by exposing users to diverse perspectives.
+
+But perhaps the most important step is the most personal: cultivating awareness of our own information environments. This means actively seeking sources that challenge comfortable assumptions. It means sitting with the discomfort of encountering perspectives that seem wrong or even offensive. It means distinguishing between disagreeing with someone's conclusions and dismissing their entire information diet as illegitimate.
+
+The media landscape will continue evolving, shaped by technologies and incentives we cannot fully predict. What remains within our control is how we navigate it—whether we allow ourselves to be sorted into separate realities or insist on the difficult work of maintaining shared ground.
+
+The divide is real. Whether it continues to widen depends on choices we make not just as citizens and consumers but as neighbors still capable of recognizing each other across the gap.`,
     leftSource: {
-      outlet: 'CNN Business',
-      headline: 'Fed Cuts Rates to Boost Struggling Economy',
-      summary: 'The Federal Reserve announced a quarter-point rate cut today, citing concerns about slowing economic growth and the need to support American workers...',
-      url: 'https://www.cnn.com/business/economy/federal-reserve',
-      imageUrl: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=800&h=400&fit=crop',
-      author: 'Matt Egan',
-      fullContent: 'The Federal Reserve announced a quarter-point interest rate cut today, marking a significant shift in monetary policy as officials seek to support an economy showing signs of weakness. The decision, which brings the federal funds rate to a range of 4.5% to 4.75%, comes amid growing concerns about slowing job growth and declining consumer confidence.\n\nFederal Reserve Chair Jerome Powell emphasized the need to support American workers during the post-meeting press conference. "We are seeing softness in the labor market that warrants a more accommodative stance," Powell said. "Our dual mandate requires us to support maximum employment while maintaining price stability."\n\nEconomists generally welcomed the move, with many noting that inflation has cooled considerably from its peak last year. Consumer prices rose just 2.4% over the past 12 months, approaching the Fed\'s 2% target. This progress on inflation has given the central bank room to shift its focus toward supporting employment.\n\nThe rate cut is expected to provide relief to borrowers, potentially lowering costs for mortgages, auto loans, and credit cards. Small businesses, which have struggled with high borrowing costs, may also benefit from easier access to credit.\n\nHowever, the Fed signaled that future rate cuts would depend on incoming economic data. "We\'re not on a preset course," Powell noted. "Each decision will be made meeting by meeting based on the totality of the data and the evolving outlook."\n\nThe labor market has shown clear signs of cooling in recent months. Job growth has slowed to an average of 150,000 per month, down from over 250,000 earlier in the year. The unemployment rate has ticked up to 4.1%, still low by historical standards but rising from its recent lows.\n\nConsumer spending, which drives about 70% of economic activity, has also moderated. Retail sales growth has slowed, and surveys show consumers becoming more cautious about major purchases. Many economists believe the Fed\'s previous rate hikes, which brought rates to a 23-year high, have begun to weigh on economic activity.\n\nThe decision was not unanimous, with one Fed official preferring to hold rates steady, citing concerns about financial stability. But the majority of the Federal Open Market Committee supported the cut, viewing it as an appropriate response to the evolving economic landscape.'
+      outlet: 'Progressive Lens',
+      headline: 'Policy Hailed as Historic Step Forward',
+      summary: 'Coverage emphasizes the benefits of the new policy, citing expert support and projecting positive long-term outcomes for the community.',
+      url: '#',
+      imageUrl: 'https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=800&h=400&fit=crop',
+      author: 'Sarah Jenkins'
     },
     rightSource: {
-      outlet: 'Fox Business',
-      headline: 'Fed Rate Cut Risks Reigniting Dangerous Inflation',
-      summary: 'In a controversial move, the Federal Reserve slashed interest rates despite persistent inflation concerns, potentially undermining economic stability...',
-      url: 'https://www.foxbusiness.com/economy/federal-reserve-rates',
-      imageUrl: 'https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?w=800&h=400&fit=crop',
-      author: 'Edward Lawrence',
-      fullContent: 'The Federal Reserve cut interest rates by a quarter percentage point today, a decision that has sparked concerns among economists who warn the move could reignite the inflation that has plagued the economy for the past two years. The rate cut brings the federal funds rate to 4.5%-4.75%, down from the peak of 5.5% that Fed officials had maintained to combat rising prices.\n\nCritics argue that the central bank is moving too quickly to ease monetary policy while inflation remains above the Fed\'s 2% target. Despite recent progress, consumer prices are still rising at an annual rate of 2.4%, and core inflation—which excludes volatile food and energy prices—stands at 2.8%.\n\n"This is a premature move that could undermine the progress we\'ve made on inflation," said former Fed advisor John Taylor. "The Fed should be holding steady until we see inflation consistently at target."\n\nThe decision comes as the federal government continues to run massive deficits, with spending far outpacing revenues. This fiscal profligacy, combined with easier monetary policy, creates a dangerous cocktail that could lead to renewed price pressures. Government spending has added approximately $2 trillion to the national debt in the past year alone.\n\nBusiness leaders have expressed mixed reactions to the rate cut. While some welcome the prospect of lower borrowing costs, others worry about the long-term implications for price stability. "We need predictable monetary policy, not political pressure driving decisions," said one manufacturing CEO who requested anonymity.\n\nThe Fed\'s decision appears to be influenced by concerns about the labor market, but unemployment remains relatively low at 4.1%. Historically, this level of unemployment has been associated with a healthy economy, not one requiring emergency monetary stimulus.\n\nMoreover, cutting rates now could limit the Fed\'s ability to respond to future economic downturns. With rates already substantially lower than the peak, the central bank has less ammunition to combat a recession if one emerges. This "running out of runway" problem has concerned monetary policy experts.\n\nEnergy markets have already begun to react to the looser monetary policy, with oil prices rising in anticipation of stronger demand and a weaker dollar. This could translate into higher gasoline prices for consumers, further complicating the inflation picture.\n\nThe Fed\'s decision also raises questions about political independence. With an election year approaching, some observers suggest the timing of the rate cut is suspicious, potentially designed to boost economic activity ahead of the vote. Fed Chair Jerome Powell has denied any political motivation, but the optics remain problematic.\n\nLooking ahead, the Fed has indicated it will proceed cautiously with future rate adjustments, but markets are already pricing in additional cuts. This expectation could become self-fulfilling, further loosening financial conditions and potentially reigniting the inflation cycle that the Fed spent two years trying to break.'
+      outlet: 'Conservative View',
+      headline: 'New Policy Called Reckless Overreach',
+      summary: 'Coverage focuses on the potential risks and costs of the policy, featuring critics who warn of unintended consequences and government excess.',
+      url: '#',
+      imageUrl: 'https://images.unsplash.com/photo-1541872703-74c5963631df?w=800&h=400&fit=crop',
+      author: 'Michael Stone'
     },
-    publishedAt: '2024-01-15T14:30:00Z',
-    category: 'Business',
-    contentHash: 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855',
-    onChainTx: '0x7f9a3b2c1d8e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9',
-    onChainTimestamp: '2024-01-15T14:35:00Z'
+    publishedAt: '2024-01-20T09:00:00Z',
+    category: 'Deep Dive',
+    contentHash: 'a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6',
+    onChainTx: '0x123abc456def7890123abc456def7890123abc456def7890',
+    onChainTimestamp: '2024-01-20T09:05:00Z',
+    personaId: 'voice-of-reason'
   },
   {
     id: '2',
     title: 'Climate Summit Reaches Historic Agreement',
     aiAnalysis: 'Coverage shows stark differences in emphasis: progressive outlets celebrate breakthrough commitments while conservative sources question economic costs and implementation feasibility. The climate agreement represents a major diplomatic achievement, but the two perspectives highlight fundamental disagreements about priorities and trade-offs.',
+    personaId: 'historian',
     leftSource: {
       outlet: 'The Guardian',
       headline: 'World Leaders Commit to Ambitious Climate Action Plan',
@@ -184,6 +219,9 @@ export default function ArticlePage({
     ? article.aiAnalysis
     : article.aiAnalysis.summary
 
+  // Get the reporter persona (default to Voice of Reason if missing)
+  const persona = article.personaId ? NEWSROOM[article.personaId] : NEWSROOM['voice-of-reason']
+
   return (
     <div className="min-h-screen bg-paper">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -237,28 +275,49 @@ export default function ArticlePage({
         )}
 
         {/* Truth & Impact Analysis Section - Prominent at top */}
-        <section className="bg-white rounded-sm shadow-card border-t-4 border-gold-500 p-8 md:p-10 mb-12 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-gold-100 rounded-full opacity-10 -mr-32 -mt-32 blur-3xl"></div>
+        <section className={`bg-white rounded-sm shadow-card border-t-4 ${persona.color.replace('text-', 'border-')} p-8 md:p-10 mb-12 relative overflow-hidden`}>
+          <div className={`absolute top-0 right-0 w-64 h-64 ${persona.color.replace('text-', 'bg-').replace('600', '100').replace('700', '100')} rounded-full opacity-10 -mr-32 -mt-32 blur-3xl`}></div>
 
           <div className="relative z-10">
             <div className="flex items-center mb-8 border-b border-gray-100 pb-4">
-              <div className="w-10 h-10 bg-navy-900 rounded-sm flex items-center justify-center mr-4 shadow-sm">
-                <svg className="w-6 h-6 text-gold-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-                </svg>
+              <div className="w-12 h-12 bg-navy-900 rounded-sm flex items-center justify-center mr-4 shadow-sm text-2xl">
+                {persona.avatar}
               </div>
               <div>
-                <h2 className="text-2xl font-serif font-bold text-navy-900">AI Consensus Analysis</h2>
-                <p className="text-sm text-gray-500">Synthesized from multiple perspectives</p>
+                <h2 className={`text-2xl font-serif font-bold text-navy-900 flex items-center gap-2`}>
+                  Analysis by <span className={persona.color}>{persona.name}</span>
+                </h2>
+                <p className="text-sm text-gray-500">{persona.role} • {persona.description}</p>
               </div>
             </div>
 
             {typeof article.aiAnalysis === 'string' ? (
-              // Simple string format (legacy)
-              <div className="news-content">
-                <p className="text-xl text-gray-700 leading-relaxed font-serif italic border-l-4 border-gold-500 pl-6 py-2">
-                  "{article.aiAnalysis}"
-                </p>
+              // Simple string format (legacy) - now with better formatting
+              <div className="news-content space-y-6">
+                {article.aiAnalysis.split('\n\n').map((block, index) => {
+                  // Handle Headers
+                  if (block.startsWith('###')) {
+                    return (
+                      <h3 key={index} className="text-2xl font-serif font-bold text-navy-900 mt-8 mb-4">
+                        {block.replace('###', '').trim()}
+                      </h3>
+                    )
+                  }
+                  // Handle Subtitles (lines that start with "An in-depth analysis")
+                  if (block.startsWith('An in-depth analysis')) {
+                    return (
+                      <p key={index} className="text-xl text-gray-600 font-light leading-relaxed italic mb-8">
+                        {block}
+                      </p>
+                    )
+                  }
+                  // Handle Standard Paragraphs
+                  return (
+                    <p key={index} className="text-lg text-gray-800 leading-relaxed font-serif">
+                      {block}
+                    </p>
+                  )
+                })}
               </div>
             ) : (
               // Enhanced structured format
@@ -477,6 +536,18 @@ export default function ArticlePage({
               Email
             </a>
 
+            {/* Preserved in Amber Badge */}
+            {article.onChainTx && (
+              <a
+                href={`https://gateway.irys.xyz/${article.onChainTx}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-amber-100 text-amber-800 border border-amber-200 text-sm hover:bg-amber-200 transition-colors"
+              >
+                <span>🔒</span>
+                <span className="font-serif italic">Preserved in Amber</span>
+              </a>
+            )}
             <button
               className="inline-flex items-center px-6 py-3 bg-white border border-gray-200 hover:border-gold-500 text-navy-900 rounded-sm transition-colors shadow-sm font-medium"
             >

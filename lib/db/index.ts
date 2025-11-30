@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client'
 import { CacheService, CacheKeys } from '@/lib/cache/redis'
 import { BlockchainClient } from '@/lib/blockchain/client'
+import { ArweaveService } from '@/lib/blockchain/arweave'
 
 // Prevent multiple instances of Prisma Client in development
 const globalForPrisma = globalThis as unknown as {
@@ -20,45 +21,18 @@ export const db = prisma
 export class DatabaseService {
 
   // Article operations
-  static async createArticle(data: {
-    title: string
-    slug: string
-    aiAnalysis: string
-    category: string
-    tags?: string[]
-    publishedAt: Date
-    leftSource: {
-      outlet: string
-      headline: string
-      summary: string
-      fullContent?: string
-      url: string
-      author?: string
-      publishedAt?: Date
-      bias: 'LEFT' | 'RIGHT' | 'CENTER'
-    }
-    rightSource: {
-      outlet: string
-      headline: string
-      summary: string
-      fullContent?: string
-      url: string
-      author?: string
-      publishedAt?: Date
-      bias: 'LEFT' | 'RIGHT' | 'CENTER'
-    }
-  }) {
-    // Generate blockchain hash and anchor
-    const contentHash = BlockchainClient.hashArticle({
-      title: data.title,
-      content: data.aiAnalysis,
-      publishedAt: data.publishedAt
+  static async createArticle(data: any) {
+    // 1. Generate content hash for integrity
+    const contentHash = BlockchainClient.hashArticle(data)
+
+    // 2. Upload to Arweave ("Preserved in Amber")
+    // This returns the permanent Transaction ID (TXID)
+    const onChainTx = await ArweaveService.uploadArticle({
+      ...data,
+      contentHash
     })
 
-    // In a real app, we might want to do this asynchronously or via a queue
-    // to avoid delaying the response, but for now we'll await it
-    const { transactionId, timestamp } = await BlockchainClient.anchorToBlockchain(contentHash)
-
+    // 3. Create article in DB with blockchain metadata
     const article = await prisma.article.create({
       data: {
         title: data.title,
@@ -69,8 +43,8 @@ export class DatabaseService {
         publishedAt: data.publishedAt,
         isPublished: true,
         contentHash,
-        onChainTx: transactionId,
-        onChainTimestamp: timestamp,
+        onChainTx,
+        onChainTimestamp: new Date(),
         leftSource: {
           create: {
             outlet: data.leftSource.outlet,
@@ -80,7 +54,7 @@ export class DatabaseService {
             url: data.leftSource.url,
             author: data.leftSource.author,
             publishedAt: data.leftSource.publishedAt,
-            bias: data.leftSource.bias as any,
+            bias: data.leftSource.bias,
             sourceType: 'RSS'
           }
         },
@@ -93,7 +67,7 @@ export class DatabaseService {
             url: data.rightSource.url,
             author: data.rightSource.author,
             publishedAt: data.rightSource.publishedAt,
-            bias: data.rightSource.bias as any,
+            bias: data.rightSource.bias,
             sourceType: 'RSS'
           }
         }
@@ -237,7 +211,7 @@ export class DatabaseService {
         name: data.name,
         url: data.url,
         outlet: data.outlet,
-        bias: data.bias as any
+        bias: data.bias
       }
     })
   }

@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import Image from 'next/image'
 import { ArticleCard } from '@/components/features/article-card'
 import { Newsletter } from '@/components/features/newsletter'
@@ -83,32 +84,34 @@ export default function Homepage() {
         <div className="grid lg:grid-cols-12 gap-8">
           {/* Main Feature (Left) */}
           <div className="lg:col-span-8">
-            <div className="relative h-[500px] rounded-sm overflow-hidden group cursor-pointer shadow-card">
-              <Image
-                src="/hero-image.png"
-                alt="Media Polarization Illustration"
-                fill
-                className="object-cover transition-transform duration-700 group-hover:scale-105"
-                priority
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-navy-900/90 via-navy-900/40 to-transparent"></div>
-              <div className="absolute bottom-0 left-0 p-8 max-w-3xl">
-                <span className="inline-block px-3 py-1 bg-gold-500 text-navy-900 text-xs font-bold uppercase tracking-widest mb-4">
-                  Deep Dive
-                </span>
-                <h1 className="text-4xl md:text-5xl font-serif font-bold text-white mb-4 leading-tight">
-                  The Great Divide: How Media Polarization is Reshaping Reality
-                </h1>
-                <p className="text-gray-200 text-lg mb-6 max-w-2xl font-light">
-                  An in-depth analysis of how the same events are portrayed as completely different realities across the political spectrum.
-                </p>
-                <div className="flex items-center text-white/80 text-sm">
-                  <span className="font-medium text-gold-500">Editorial Team</span>
-                  <span className="mx-2">•</span>
-                  <span>5 min read</span>
+            <Link href="/article/1">
+              <div className="relative h-[500px] rounded-sm overflow-hidden group cursor-pointer shadow-card">
+                <Image
+                  src="/hero-image.png"
+                  alt="Media Polarization Illustration"
+                  fill
+                  className="object-cover transition-transform duration-700 group-hover:scale-105"
+                  priority
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-navy-900/90 via-navy-900/40 to-transparent"></div>
+                <div className="absolute bottom-0 left-0 p-8 max-w-3xl">
+                  <span className="inline-block px-3 py-1 bg-gold-500 text-navy-900 text-xs font-bold uppercase tracking-widest mb-4">
+                    Deep Dive
+                  </span>
+                  <h1 className="text-4xl md:text-5xl font-serif font-bold text-white mb-4 leading-tight">
+                    The Great Divide: How Media Polarization is Reshaping Reality
+                  </h1>
+                  <p className="text-gray-200 text-lg mb-6 max-w-2xl font-light">
+                    An in-depth analysis of how the same events are portrayed as completely different realities across the political spectrum.
+                  </p>
+                  <div className="flex items-center text-white/80 text-sm">
+                    <span className="font-medium text-gold-500">Editorial Team</span>
+                    <span className="mx-2">•</span>
+                    <span>5 min read</span>
+                  </div>
                 </div>
               </div>
-            </div>
+            </Link>
           </div>
 
           {/* Trending / Top Stories (Right) */}
