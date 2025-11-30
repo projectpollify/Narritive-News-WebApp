@@ -58,6 +58,8 @@ model Article {
   updatedAt   DateTime @updatedAt
   viewCount   Int      @default(0)
   isPublished Boolean  @default(false)
+  upvotes     Int      @default(0)
+  downvotes   Int      @default(0)
 
   // Blockchain Verification
   contentHash      String?   // SHA-256 hash of the content

@@ -13,6 +13,8 @@ interface ArticleData {
     publishedAt: string;
     category: string;
     personaId?: string;
+    upvotes?: number;
+    downvotes?: number;
     timestamp: string;
 }
 
@@ -60,6 +62,8 @@ export class ArweaveService {
             publishedAt: article.publishedAt,
             category: article.category,
             personaId: article.personaId,
+            upvotes: article.upvotes || 0,
+            downvotes: article.downvotes || 0,
             timestamp: new Date().toISOString()
         };
 

@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Link from 'next/link'
 import { Inter, Playfair_Display, Source_Sans_3 } from 'next/font/google'
 import '../styles/globals.css'
 
@@ -40,7 +41,7 @@ export default function RootLayout({
           <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center h-20">
               {/* Logo */}
-              <div className="flex items-center group cursor-pointer">
+              <Link href="/" className="flex items-center group cursor-pointer">
                 <div className="w-10 h-10 bg-navy-900 text-white flex items-center justify-center rounded-sm mr-3 shadow-md group-hover:bg-navy-800 transition-colors">
                   <span className="font-serif font-bold text-xl">N</span>
                 </div>
@@ -52,7 +53,7 @@ export default function RootLayout({
                     Two Perspectives, One Truth
                   </span>
                 </div>
-              </div>
+              </Link>
 
               {/* Navigation */}
               <div className="hidden md:flex items-center space-x-8">

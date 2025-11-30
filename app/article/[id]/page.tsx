@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { FeedbackControl } from '@/components/features/feedback-control'
 import Image from 'next/image'
 import { formatDistanceToNow } from 'date-fns'
 import { notFound } from 'next/navigation'
@@ -291,6 +292,16 @@ export default function ArticlePage({
               </div>
             </div>
 
+            {/* Feedback Control - Top of Article */}
+            <div className="mb-8 flex justify-end">
+              <FeedbackControl
+                articleId={article.id}
+                initialUpvotes={124}
+                initialDownvotes={12}
+                variant="minimal"
+              />
+            </div>
+
             {typeof article.aiAnalysis === 'string' ? (
               // Simple string format (legacy) - now with better formatting
               <div className="news-content space-y-6">
@@ -389,137 +400,6 @@ export default function ArticlePage({
           </div>
         </section>
 
-        {/* Two-Column Comparison */}
-        <div className="grid lg:grid-cols-2 gap-px bg-gray-200 border border-gray-200 rounded-sm overflow-hidden shadow-card">
-          {/* Left Perspective */}
-          <article className="bg-white relative group">
-            <div className="absolute top-0 left-0 w-full h-1 bg-democrat"></div>
-
-            {/* Header */}
-            <div className="p-8 border-b border-gray-100 bg-gray-50/50">
-              <div className="flex items-center justify-between mb-4">
-                <span className="text-sm font-bold text-democrat uppercase tracking-wider flex items-center">
-                  <span className="w-2 h-2 bg-democrat rounded-full mr-2"></span>
-                  {article.leftSource.outlet}
-                </span>
-                {article.leftSource.author && (
-                  <span className="text-xs text-gray-500 font-medium uppercase tracking-wide">
-                    By {article.leftSource.author}
-                  </span>
-                )}
-              </div>
-              <h3 className="text-2xl font-serif font-bold text-navy-900 leading-tight group-hover:text-democrat transition-colors">
-                {article.leftSource.headline}
-              </h3>
-            </div>
-
-            {/* Image */}
-            {article.leftSource.imageUrl && (
-              <div className="relative h-64 w-full bg-gray-200 grayscale group-hover:grayscale-0 transition-all duration-500">
-                <Image
-                  src={article.leftSource.imageUrl}
-                  alt={article.leftSource.headline}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 1024px) 100vw, 50vw"
-                  priority
-                />
-              </div>
-            )}
-
-            {/* Content */}
-            <div className="p-8">
-              <div className="news-content text-gray-700 space-y-4 mb-8 font-serif leading-relaxed">
-                {article.leftSource.fullContent ? (
-                  article.leftSource.fullContent.split('\n\n').map((paragraph, index) => (
-                    <p key={index}>
-                      {paragraph}
-                    </p>
-                  ))
-                ) : (
-                  <p>{article.leftSource.summary}</p>
-                )}
-              </div>
-
-              <a
-                href={article.leftSource.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center text-sm font-bold text-democrat hover:text-navy-900 uppercase tracking-wide transition-colors"
-              >
-                Read Original Article
-                <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                </svg>
-              </a>
-            </div>
-          </article>
-
-          {/* Right Perspective */}
-          <article className="bg-white relative group">
-            <div className="absolute top-0 left-0 w-full h-1 bg-republican"></div>
-
-            {/* Header */}
-            <div className="p-8 border-b border-gray-100 bg-gray-50/50">
-              <div className="flex items-center justify-between mb-4">
-                <span className="text-sm font-bold text-republican uppercase tracking-wider flex items-center">
-                  <span className="w-2 h-2 bg-republican rounded-full mr-2"></span>
-                  {article.rightSource.outlet}
-                </span>
-                {article.rightSource.author && (
-                  <span className="text-xs text-gray-500 font-medium uppercase tracking-wide">
-                    By {article.rightSource.author}
-                  </span>
-                )}
-              </div>
-              <h3 className="text-2xl font-serif font-bold text-navy-900 leading-tight group-hover:text-republican transition-colors">
-                {article.rightSource.headline}
-              </h3>
-            </div>
-
-            {/* Image */}
-            {article.rightSource.imageUrl && (
-              <div className="relative h-64 w-full bg-gray-200 grayscale group-hover:grayscale-0 transition-all duration-500">
-                <Image
-                  src={article.rightSource.imageUrl}
-                  alt={article.rightSource.headline}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 1024px) 100vw, 50vw"
-                  priority
-                />
-              </div>
-            )}
-
-            {/* Content */}
-            <div className="p-8">
-              <div className="news-content text-gray-700 space-y-4 mb-8 font-serif leading-relaxed">
-                {article.rightSource.fullContent ? (
-                  article.rightSource.fullContent.split('\n\n').map((paragraph, index) => (
-                    <p key={index}>
-                      {paragraph}
-                    </p>
-                  ))
-                ) : (
-                  <p>{article.rightSource.summary}</p>
-                )}
-              </div>
-
-              <a
-                href={article.rightSource.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center text-sm font-bold text-republican hover:text-navy-900 uppercase tracking-wide transition-colors"
-              >
-                Read Original Article
-                <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                </svg>
-              </a>
-            </div>
-          </article>
-        </div>
-
         {/* Share Section */}
         <section className="mt-16 pt-12 border-t border-gray-200 text-center">
           <h3 className="text-xl font-serif font-bold text-navy-900 mb-4">
@@ -556,6 +436,25 @@ export default function ArticlePage({
               </svg>
               Copy Link
             </button>
+          </div>
+        </section>
+
+        {/* Bottom Feedback Control */}
+        <section className="mt-12 mb-20 max-w-2xl mx-auto text-center">
+          <div className="bg-white p-8 rounded-sm shadow-soft border border-gray-100">
+            <h3 className="font-serif font-bold text-2xl text-navy-900 mb-2">
+              What did you think of this analysis?
+            </h3>
+            <p className="text-gray-500 mb-6">
+              Your anonymous vote helps us track the public sentiment on this narrative.
+            </p>
+            <div className="flex justify-center">
+              <FeedbackControl
+                articleId={article.id}
+                initialUpvotes={124}
+                initialDownvotes={12}
+              />
+            </div>
           </div>
         </section>
       </div>

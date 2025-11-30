@@ -105,7 +105,7 @@ export default function Homepage() {
                     An in-depth analysis of how the same events are portrayed as completely different realities across the political spectrum.
                   </p>
                   <div className="flex items-center text-white/80 text-sm">
-                    <span className="font-medium text-gold-500">Editorial Team</span>
+                    <span className="font-medium text-gold-500">Atticus Noble</span>
                     <span className="mx-2">•</span>
                     <span>5 min read</span>
                   </div>
