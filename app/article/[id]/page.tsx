@@ -102,37 +102,60 @@ The divide is real. Whether it continues to widen depends on choices we make not
       imageUrl: 'https://images.unsplash.com/photo-1541872703-74c5963631df?w=800&h=400&fit=crop',
       author: 'Michael Stone'
     },
-    publishedAt: '2024-01-20T09:00:00Z',
+    publishedAt: '2025-11-30T09:00:00Z',
     category: 'Deep Dive',
     contentHash: 'a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6',
     onChainTx: '0x123abc456def7890123abc456def7890123abc456def7890',
-    onChainTimestamp: '2024-01-20T09:05:00Z',
+    onChainTimestamp: '2025-11-30T09:05:00Z',
     personaId: 'voice-of-reason'
   },
   {
     id: '2',
-    title: 'Climate Summit Reaches Historic Agreement',
-    aiAnalysis: 'Coverage shows stark differences in emphasis: progressive outlets celebrate breakthrough commitments while conservative sources question economic costs and implementation feasibility. The climate agreement represents a major diplomatic achievement, but the two perspectives highlight fundamental disagreements about priorities and trade-offs.',
+    title: 'Defense Secretary Under Fire Over Alleged "Kill Order"',
+    aiAnalysis: {
+      summary: 'Reports of a controversial order to eliminate survivors of a drug boat strike have ignited a firestorm. Liberal outlets frame this as a potential war crime and a failure of command, while conservative sources defend the Secretary against what they call a fabricated smear campaign designed to undermine national security efforts.',
+      truthCheck: 'Defense Secretary Hegseth has confirmed that a strike took place against a drug smuggling vessel. The Washington Post has published allegations based on anonymous sources claiming a "kill everybody" order was given. Hegseth has publicly denied giving such an order, calling the report "fabricated."',
+      spinDetection: 'Liberal sources emphasize the term "massacre" and focus on the vulnerability of the survivors. Conservative sources focus on the "narco-terrorist" threat and use terms like "smear campaign" and "fake news" to discredit the allegations.',
+      realImpact: 'This controversy could trigger congressional investigations and impact the administration\'s ability to conduct future anti-narcotics operations. It also deepens the rift between the military leadership and the press.',
+      commonGround: 'Both sides agree that drug trafficking poses a significant national security threat and that military operations in the region are ongoing.',
+      biggerPicture: `In the murky waters of the Caribbean, a new battlefront has opened—not just against drug cartels, but over the very nature of truth in modern warfare. The allegations against Defense Secretary Pete Hegseth represent a collision of two distinct worldviews: one that prioritizes strict adherence to international law and human rights, even in the heat of battle, and another that views such constraints as weaknesses exploited by ruthless enemies.
+
+### The Fog of War vs. The Rule of Law
+
+At the heart of this controversy is a specific, chilling allegation: that a high-ranking U.S. official ordered the execution of survivors who posed no immediate threat. If true, this would constitute a grave violation of the Geneva Conventions and U.S. military code. The liberal perspective, championed by outlets like The Washington Post, treats this possibility with appropriate gravity, demanding accountability and transparency. For them, the moral standing of the United States is at stake. If we become a nation that executes survivors, we lose the moral high ground that distinguishes us from the cartels we fight.
+
+### The "Fake News" Defense
+
+Conversely, the conservative defense, articulated by Hegseth and echoed by Fox News, frames this not as a legal question but as a political one. By labeling the report "fabricated" and "fake news," they shift the debate from *what happened* to *who is telling the story*. In this narrative, the mainstream media is an adversary as dangerous as the drug lords—a "fifth column" intent on undermining the administration's efforts to secure the border and protect the homeland. This defense resonates with a base that has long lost trust in institutional reporting, viewing every critical story as a partisan hit job.
+
+### The Reality of "Kinetic" Operations
+
+The term "kinetic strike"—used by Hegseth to describe the operation—is military shorthand for lethal force. It is a sterile term for a violent reality. The drug war has increasingly militarized, with cartels employing sophisticated weaponry and tactics. In this high-stakes environment, the line between law enforcement and combat blurs. Proponents of aggressive tactics argue that hesitation costs lives and that "narco-terrorists" should not be afforded the same protections as conventional soldiers. Critics argue that this slippery slope leads to barbarism.
+
+### A fractured Public Trust
+
+Ultimately, this story illustrates the profound fracture in public trust. One half of the country sees a potential war criminal running the Pentagon; the other sees a hero being persecuted by a dishonest press. Without an independent, universally trusted arbiter to establish the facts—video evidence, for instance, or a bipartisan investigation—these two realities will never converge. The truth of what happened on that boat may remain buried at sea, leaving only the political wake it created.`
+    },
     personaId: 'historian',
     leftSource: {
-      outlet: 'The Guardian',
-      headline: 'World Leaders Commit to Ambitious Climate Action Plan',
-      summary: 'Global leaders reached a groundbreaking agreement at the climate summit, with unprecedented commitments to reduce emissions and invest in renewable energy...',
-      url: 'https://www.theguardian.com/environment/climate-summit',
-      imageUrl: 'https://images.unsplash.com/photo-1569163139394-de4798aa62b6?w=800&h=400&fit=crop',
-      author: 'Fiona Harvey',
-      fullContent: 'World leaders have reached a historic agreement at the international climate summit, committing to unprecedented action to combat global warming and transition to clean energy. The accord, signed by representatives from 195 countries, sets ambitious targets for emissions reductions and renewable energy investment over the next decade.\n\nThe agreement includes a commitment to triple renewable energy capacity by 2030 and phase down fossil fuel use "in line with science." Developed nations also pledged $300 billion annually to help developing countries transition to clean energy and adapt to climate impacts—a significant increase from previous commitments.\n\n"This is a turning point in our fight against climate change," said summit president Amina Rahman. "For the first time, we have universal agreement on the need for rapid, comprehensive action."\n\nEnvironmental groups largely praised the agreement, though many noted it doesn\'t go far enough. "This is real progress, but we need to move even faster," said Greenpeace International Director Jennifer Morgan. "Every fraction of a degree of warming matters."\n\nThe agreement also establishes a new mechanism for tracking and verifying emissions reductions, addressing a longstanding concern about accountability. Countries will report their progress annually, with independent verification to ensure compliance.'
+      outlet: 'Washington Post',
+      headline: 'Defense Secretary Accused of Ordering Massacre of Survivors',
+      summary: 'A bombshell report alleges Defense Secretary Hegseth ordered a second strike to "kill everybody" on a disabled drug boat, raising serious questions about legality and morality...',
+      url: '#',
+      imageUrl: '/images/hegseth-left.png',
+      author: 'Investigative Team',
+      fullContent: 'In a revelation that has sent shockwaves through the Pentagon and Capitol Hill, The Washington Post has obtained classified information alleging that Defense Secretary Pete Hegseth personally ordered the execution of survivors following a military strike on a suspected drug smuggling vessel in the Caribbean.\n\nAccording to multiple whistleblowers with direct knowledge of the operation, a U.S. drone strike initially disabled the vessel, leaving at least two survivors clinging to the wreckage. Standard rules of engagement require that incapacitated combatants or suspects be offered quarter and taken into custody. However, the report alleges that when informed of the survivors, Secretary Hegseth issued a direct order to "kill everybody" and "leave no witnesses."\n\nA second strike was subsequently launched, obliterating the wreckage and killing the remaining individuals. "It was a massacre," said one official who spoke on the condition of anonymity. "They were sitting ducks. There was no threat. It was a straight-up execution."\n\nLegal experts warn that if these allegations are substantiated, they could constitute a war crime under the Geneva Conventions and U.S. law. "Ordering the death of a combatant who is hors de combat—out of the fight due to injury or wreckage—is a grave breach of international law," said human rights attorney Sarah Miller. "This goes beyond aggressive tactics; this is criminal conduct."\n\nDemocratic lawmakers are already calling for an immediate congressional investigation and Hegseth\'s resignation. "We cannot have a Defense Secretary who believes he is above the law," said Senator Chris Murphy. "The American military does not execute survivors. This is a stain on our national honor."'
     },
     rightSource: {
-      outlet: 'Wall Street Journal',
-      headline: 'Climate Deal Could Cost Trillions, Hurt Economic Growth',
-      summary: 'The new climate agreement includes costly mandates that could burden businesses and consumers, raising questions about economic feasibility...',
-      url: 'https://www.wsj.com/articles/climate-agreement',
-      imageUrl: 'https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=800&h=400&fit=crop',
-      author: 'Timothy Puko',
-      fullContent: 'The climate agreement reached at this week\'s international summit could cost the global economy trillions of dollars and significantly impact economic growth, according to analysis from leading economists and industry groups. While supporters tout the environmental benefits, the deal\'s ambitious targets raise serious questions about feasibility and economic consequences.\n\nThe agreement commits signatories to tripling renewable energy capacity by 2030—a goal that would require massive infrastructure investments estimated at $4-5 trillion globally. This spending would need to come from a combination of public and private sources at a time when many countries are already struggling with high debt levels.\n\n"These are aspirational goals that don\'t account for economic reality," said energy economist Robert Bryce. "You can\'t simply mandate a energy transition without considering the costs and disruptions involved."\n\nIndustry representatives expressed concern about the pace of change required. The fossil fuel phasedown timeline could strand trillions in existing energy infrastructure and disrupt energy markets. "We support cleaner energy, but this needs to be a realistic transition that maintains energy security and affordability," said a spokesperson for the American Petroleum Institute.\n\nDeveloping nations secured $300 billion in annual climate finance from wealthy countries, but questions remain about how this money will be raised and distributed. Taxpayers in developed countries may face higher taxes to fund these commitments, while governance concerns plague international climate finance mechanisms.'
+      outlet: 'Fox News',
+      headline: 'Hegseth Slams "Fabricated" Hit Piece; Defends Action Against Narco-Terrorists',
+      summary: 'Pete Hegseth vehemently denies the allegations, calling them "fake news" and asserting that the operation was a lawful strike against dangerous criminals threatening American security...',
+      url: '#',
+      imageUrl: '/images/hegseth-right.png',
+      author: 'Defense Correspondent',
+      fullContent: 'Defense Secretary Pete Hegseth is firing back at what he calls a "disgusting and completely fabricated" smear campaign by The Washington Post, following a report that accused him of ordering unlawful strikes on drug smugglers.\n\nIn a fiery press conference today, Hegseth categorically denied the allegation that he ordered the execution of survivors. "This is fake news, plain and simple," Hegseth declared, flanked by military leadership. "The Washington Post is acting as the propaganda arm for the cartels. They would rather attack our brave men and women in uniform than report the truth about the narco-terrorists threatening our border."\n\nHegseth clarified that the operation in question was a "lawful, kinetic strike" against a high-value target carrying tons of lethal fentanyl bound for American streets. He emphasized that the rules of engagement were followed strictly and that the vessel posed an imminent threat.\n\n"We are in a war," Hegseth stated. "These aren\'t innocent fishermen; these are paramilitary organizations that kill Americans every single day with their poison. We will not apologize for defending this country."\n\nSupporters have rallied around the Secretary, viewing the allegations as the latest attempt by the liberal media and the "Deep State" to undermine the Trump administration\'s tough-on-crime agenda. "They can\'t stand that we are finally taking the fight to the enemy," said a senior administration official. "This is just another hoax designed to weaken our military."'
     },
-    publishedAt: '2024-01-14T09:15:00Z',
+    publishedAt: '2025-12-01T08:00:00Z',
     category: 'Politics'
   },
   {
@@ -385,20 +408,167 @@ export default function ArticlePage({
                   )}
                 </div>
 
-                {article.aiAnalysis.biggerPicture && (
-                  <div className="md:col-span-2 mt-4 pt-8 border-t border-gray-100">
-                    <h3 className="text-lg font-serif font-bold text-navy-900 mb-3">
-                      The Bigger Picture
-                    </h3>
-                    <p className="text-lg text-gray-600 leading-relaxed italic">
-                      {article.aiAnalysis.biggerPicture}
-                    </p>
-                  </div>
-                )}
+
               </div>
             )}
           </div>
         </section>
+
+        {/* The Perspectives Section */}
+        <section className="mb-20">
+          <h2 className="text-3xl font-serif font-bold text-navy-900 mb-10 text-center">The Perspectives</h2>
+
+          <div className="grid md:grid-cols-2 gap-12">
+            {/* Left Source */}
+            <article className="bg-white rounded-sm shadow-card overflow-hidden border-t-4 border-democrat">
+              {article.leftSource.imageUrl && (
+                <div className="relative h-64 w-full">
+                  <Image
+                    src={article.leftSource.imageUrl}
+                    alt={article.leftSource.headline}
+                    fill
+                    className="object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                  <div className="absolute bottom-4 left-4 text-white">
+                    <span className="bg-democrat px-2 py-1 text-xs font-bold uppercase tracking-widest rounded-sm mb-2 inline-block">
+                      Left Perspective
+                    </span>
+                  </div>
+                </div>
+              )}
+
+              <div className="p-8">
+                <div className="flex items-center justify-between mb-4">
+                  <span className="text-democrat font-bold uppercase tracking-wider text-sm">
+                    {article.leftSource.outlet}
+                  </span>
+                  {article.leftSource.author && (
+                    <span className="text-gray-400 text-sm italic">by {article.leftSource.author}</span>
+                  )}
+                </div>
+
+                <h3 className="text-2xl font-serif font-bold text-navy-900 mb-6 leading-tight">
+                  {article.leftSource.headline}
+                </h3>
+
+                <div className="prose prose-lg text-gray-600">
+                  {article.leftSource.fullContent ? (
+                    article.leftSource.fullContent.split('\n\n').map((paragraph, idx) => (
+                      <p key={idx} className="mb-4 leading-relaxed">
+                        {paragraph}
+                      </p>
+                    ))
+                  ) : (
+                    <p>{article.leftSource.summary}</p>
+                  )}
+                </div>
+
+                <div className="mt-8 pt-6 border-t border-gray-100">
+                  <a
+                    href={article.leftSource.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-democrat hover:text-navy-900 font-bold text-sm uppercase tracking-wide flex items-center group"
+                  >
+                    Read Original Article
+                    <svg className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                    </svg>
+                  </a>
+                </div>
+              </div>
+            </article>
+
+            {/* Right Source */}
+            <article className="bg-white rounded-sm shadow-card overflow-hidden border-t-4 border-republican">
+              {article.rightSource.imageUrl && (
+                <div className="relative h-64 w-full">
+                  <Image
+                    src={article.rightSource.imageUrl}
+                    alt={article.rightSource.headline}
+                    fill
+                    className="object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                  <div className="absolute bottom-4 left-4 text-white">
+                    <span className="bg-republican px-2 py-1 text-xs font-bold uppercase tracking-widest rounded-sm mb-2 inline-block">
+                      Right Perspective
+                    </span>
+                  </div>
+                </div>
+              )}
+
+              <div className="p-8">
+                <div className="flex items-center justify-between mb-4">
+                  <span className="text-republican font-bold uppercase tracking-wider text-sm">
+                    {article.rightSource.outlet}
+                  </span>
+                  {article.rightSource.author && (
+                    <span className="text-gray-400 text-sm italic">by {article.rightSource.author}</span>
+                  )}
+                </div>
+
+                <h3 className="text-2xl font-serif font-bold text-navy-900 mb-6 leading-tight">
+                  {article.rightSource.headline}
+                </h3>
+
+                <div className="prose prose-lg text-gray-600">
+                  {article.rightSource.fullContent ? (
+                    article.rightSource.fullContent.split('\n\n').map((paragraph, idx) => (
+                      <p key={idx} className="mb-4 leading-relaxed">
+                        {paragraph}
+                      </p>
+                    ))
+                  ) : (
+                    <p>{article.rightSource.summary}</p>
+                  )}
+                </div>
+
+                <div className="mt-8 pt-6 border-t border-gray-100">
+                  <a
+                    href={article.rightSource.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-republican hover:text-navy-900 font-bold text-sm uppercase tracking-wide flex items-center group"
+                  >
+                    Read Original Article
+                    <svg className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                    </svg>
+                  </a>
+                </div>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        {/* The Bigger Picture Section - Moved here */}
+        {typeof article.aiAnalysis !== 'string' && article.aiAnalysis.biggerPicture && (
+          <section className="mb-20 max-w-4xl mx-auto">
+            <h2 className="text-3xl font-serif font-bold text-navy-900 mb-10 text-center">
+              The Bigger Picture
+            </h2>
+            <div className="bg-white p-10 rounded-sm shadow-card border-t-4 border-navy-900">
+              <div className="prose prose-lg text-gray-700 max-w-none">
+                {article.aiAnalysis.biggerPicture.split('\n\n').map((block, index) => {
+                  if (block.startsWith('###')) {
+                    return (
+                      <h4 key={index} className="text-2xl font-serif font-bold text-navy-900 mt-10 mb-4">
+                        {block.replace('###', '').trim()}
+                      </h4>
+                    )
+                  }
+                  return (
+                    <p key={index} className="mb-6 leading-relaxed text-lg font-serif">
+                      {block}
+                    </p>
+                  )
+                })}
+              </div>
+            </div>
+          </section>
+        )}
 
         {/* Share Section */}
         <section className="mt-16 pt-12 border-t border-gray-200 text-center">

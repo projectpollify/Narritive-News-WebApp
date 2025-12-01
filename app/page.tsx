@@ -2,6 +2,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { ArticleCard } from '@/components/features/article-card'
 import { Newsletter } from '@/components/features/newsletter'
+import { ArweaveTooltip } from '@/components/features/arweave-tooltip'
 
 // Mock data for development - will be replaced with real data later
 const mockArticles = [
@@ -30,25 +31,25 @@ const mockArticles = [
   },
   {
     id: '2',
-    title: 'Climate Summit Reaches Historic Agreement',
-    aiAnalysis: 'Coverage shows stark differences in emphasis: progressive outlets celebrate breakthrough commitments while conservative sources question economic costs and implementation feasibility.',
+    title: 'Defense Secretary Under Fire Over Alleged "Kill Order"',
+    aiAnalysis: 'Reports of a controversial order to eliminate survivors of a drug boat strike have ignited a firestorm. Liberal outlets frame this as a potential war crime and a failure of command, while conservative sources defend the Secretary against what they call a fabricated smear campaign designed to undermine national security efforts.',
     leftSource: {
-      outlet: 'The Guardian',
-      headline: 'World Leaders Commit to Ambitious Climate Action Plan',
-      summary: 'Global leaders reached a groundbreaking agreement at the climate summit, with unprecedented commitments to reduce emissions and invest in renewable energy...',
-      url: 'https://www.theguardian.com/environment/climate-summit',
-      imageUrl: 'https://images.unsplash.com/photo-1569163139394-de4798aa62b6?w=800&h=400&fit=crop',
-      author: 'Fiona Harvey'
+      outlet: 'Washington Post',
+      headline: 'Defense Secretary Accused of Ordering Massacre of Survivors',
+      summary: 'A bombshell report alleges Defense Secretary Hegseth ordered a second strike to "kill everybody" on a disabled drug boat, raising serious questions about legality and morality...',
+      url: '#',
+      imageUrl: '/images/hegseth-left.png',
+      author: 'Investigative Team'
     },
     rightSource: {
-      outlet: 'Wall Street Journal',
-      headline: 'Climate Deal Could Cost Trillions, Hurt Economic Growth',
-      summary: 'The new climate agreement includes costly mandates that could burden businesses and consumers, raising questions about economic feasibility...',
-      url: 'https://www.wsj.com/articles/climate-agreement',
-      imageUrl: 'https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=800&h=400&fit=crop',
-      author: 'Timothy Puko'
+      outlet: 'Fox News',
+      headline: 'Hegseth Slams "Fabricated" Hit Piece; Defends Action Against Narco-Terrorists',
+      summary: 'Pete Hegseth vehemently denies the allegations, calling them "fake news" and asserting that the operation was a lawful strike against dangerous criminals threatening American security...',
+      url: '#',
+      imageUrl: '/images/hegseth-right.png',
+      author: 'Defense Correspondent'
     },
-    publishedAt: '2024-01-14T09:15:00Z',
+    publishedAt: '2025-12-01T08:00:00Z',
     category: 'Politics'
   },
   {
@@ -157,8 +158,10 @@ export default function Homepage() {
             Our AI analyzes thousands of articles daily to show you how different outlets frame the same story,
             giving you the complete picture.
           </p>
+        </div>
 
-          <div className="grid md:grid-cols-3 gap-8 text-left">
+        <div className="relative z-10">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 text-left">
             <div className="p-6 bg-paper rounded-sm border border-gray-100 hover:border-gold-500/30 transition-colors">
               <div className="w-10 h-10 bg-navy-900 text-white rounded-sm flex items-center justify-center mb-4">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
@@ -179,6 +182,13 @@ export default function Homepage() {
               </div>
               <h3 className="font-serif font-bold text-lg text-navy-900 mb-2">Media Literacy</h3>
               <p className="text-sm text-gray-500">Learn to spot bias and framing techniques used by modern media.</p>
+            </div>
+            <div className="p-6 bg-paper rounded-sm border border-gray-100 hover:border-gold-500/30 transition-colors">
+              <div className="w-10 h-10 bg-navy-900 text-white rounded-sm flex items-center justify-center mb-4">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
+              </div>
+              <h3 className="font-serif font-bold text-lg text-navy-900 mb-2">Immutable Records</h3>
+              <p className="text-sm text-gray-500">Permanently archiving history on <ArweaveTooltip /> to prevent censorship and revisionism.</p>
             </div>
           </div>
         </div>

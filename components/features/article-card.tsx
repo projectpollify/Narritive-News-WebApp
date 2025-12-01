@@ -88,43 +88,69 @@ export function ArticleCard({ article }: ArticleCardProps) {
         {/* Two Perspectives Grid */}
         <div className="grid md:grid-cols-2 gap-px bg-gray-200 border border-gray-200 rounded-sm overflow-hidden">
           {/* Left Perspective */}
-          <div className="bg-white p-6 hover:bg-democrat-light/10 transition-colors relative group/left">
-            <div className="absolute top-0 left-0 w-full h-1 bg-democrat scale-x-0 group-hover/left:scale-x-100 transition-transform origin-left"></div>
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-xs font-bold text-democrat uppercase tracking-wider flex items-center">
-                <span className="w-1.5 h-1.5 bg-democrat rounded-full mr-2"></span>
-                {article.leftSource.outlet}
-              </span>
+          <div className="bg-white hover:bg-democrat-light/10 transition-colors relative group/left flex flex-col h-full">
+            <div className="absolute top-0 left-0 w-full h-1 bg-democrat scale-x-0 group-hover/left:scale-x-100 transition-transform origin-left z-10"></div>
+            {article.leftSource.imageUrl && (
+              <div className="relative h-48 w-full overflow-hidden">
+                <Image
+                  src={article.leftSource.imageUrl}
+                  alt={article.leftSource.outlet}
+                  fill
+                  className="object-cover transition-transform duration-700 group-hover/left:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover/left:opacity-100 transition-opacity duration-300"></div>
+              </div>
+            )}
+            <div className="p-6 flex flex-col flex-grow">
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-xs font-bold text-democrat uppercase tracking-wider flex items-center">
+                  <span className="w-1.5 h-1.5 bg-democrat rounded-full mr-2"></span>
+                  {article.leftSource.outlet}
+                </span>
+              </div>
+              <h3 className="font-serif font-bold text-lg text-navy-900 mb-2 leading-snug group-hover/left:text-democrat transition-colors">
+                {article.leftSource.headline}
+              </h3>
+              <p className="text-sm text-gray-500 leading-relaxed line-clamp-3 mb-4 flex-grow">
+                {article.leftSource.summary}
+              </p>
+              <a href={article.leftSource.url} target="_blank" rel="noopener noreferrer" className="text-xs font-bold text-democrat uppercase tracking-wide hover:underline mt-auto">
+                Read Original →
+              </a>
             </div>
-            <h3 className="font-serif font-bold text-lg text-navy-900 mb-2 leading-snug group-hover/left:text-democrat transition-colors">
-              {article.leftSource.headline}
-            </h3>
-            <p className="text-sm text-gray-500 leading-relaxed line-clamp-3 mb-4">
-              {article.leftSource.summary}
-            </p>
-            <a href={article.leftSource.url} target="_blank" rel="noopener noreferrer" className="text-xs font-bold text-democrat uppercase tracking-wide hover:underline">
-              Read Original →
-            </a>
           </div>
 
           {/* Right Perspective */}
-          <div className="bg-white p-6 hover:bg-republican-light/10 transition-colors relative group/right">
-            <div className="absolute top-0 left-0 w-full h-1 bg-republican scale-x-0 group-hover/right:scale-x-100 transition-transform origin-left"></div>
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-xs font-bold text-republican uppercase tracking-wider flex items-center">
-                <span className="w-1.5 h-1.5 bg-republican rounded-full mr-2"></span>
-                {article.rightSource.outlet}
-              </span>
+          <div className="bg-white hover:bg-republican-light/10 transition-colors relative group/right flex flex-col h-full">
+            <div className="absolute top-0 left-0 w-full h-1 bg-republican scale-x-0 group-hover/right:scale-x-100 transition-transform origin-left z-10"></div>
+            {article.rightSource.imageUrl && (
+              <div className="relative h-48 w-full overflow-hidden">
+                <Image
+                  src={article.rightSource.imageUrl}
+                  alt={article.rightSource.outlet}
+                  fill
+                  className="object-cover transition-transform duration-700 group-hover/right:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover/right:opacity-100 transition-opacity duration-300"></div>
+              </div>
+            )}
+            <div className="p-6 flex flex-col flex-grow">
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-xs font-bold text-republican uppercase tracking-wider flex items-center">
+                  <span className="w-1.5 h-1.5 bg-republican rounded-full mr-2"></span>
+                  {article.rightSource.outlet}
+                </span>
+              </div>
+              <h3 className="font-serif font-bold text-lg text-navy-900 mb-2 leading-snug group-hover/right:text-republican transition-colors">
+                {article.rightSource.headline}
+              </h3>
+              <p className="text-sm text-gray-500 leading-relaxed line-clamp-3 mb-4 flex-grow">
+                {article.rightSource.summary}
+              </p>
+              <a href={article.rightSource.url} target="_blank" rel="noopener noreferrer" className="text-xs font-bold text-republican uppercase tracking-wide hover:underline mt-auto">
+                Read Original →
+              </a>
             </div>
-            <h3 className="font-serif font-bold text-lg text-navy-900 mb-2 leading-snug group-hover/right:text-republican transition-colors">
-              {article.rightSource.headline}
-            </h3>
-            <p className="text-sm text-gray-500 leading-relaxed line-clamp-3 mb-4">
-              {article.rightSource.summary}
-            </p>
-            <a href={article.rightSource.url} target="_blank" rel="noopener noreferrer" className="text-xs font-bold text-republican uppercase tracking-wide hover:underline">
-              Read Original →
-            </a>
           </div>
         </div>
       </div>

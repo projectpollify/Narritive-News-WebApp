@@ -57,24 +57,14 @@ export default function RootLayout({
 
               {/* Navigation */}
               <div className="hidden md:flex items-center space-x-8">
-                <a href="/" className="text-gray-600 hover:text-navy-900 font-medium transition-colors text-sm uppercase tracking-wide">
-                  Latest
-                </a>
-                <a href="/politics" className="text-gray-600 hover:text-navy-900 font-medium transition-colors text-sm uppercase tracking-wide">
-                  Politics
-                </a>
-                <a href="/business" className="text-gray-600 hover:text-navy-900 font-medium transition-colors text-sm uppercase tracking-wide">
-                  Business
-                </a>
-                <a href="/archives" className="text-gray-600 hover:text-navy-900 font-medium transition-colors text-sm uppercase tracking-wide">
-                  Archives
-                </a>
-                <a href="/about" className="text-gray-600 hover:text-navy-900 font-medium transition-colors text-sm uppercase tracking-wide">
-                  About
-                </a>
-                <button className="bg-navy-900 text-white px-6 py-2.5 rounded-sm hover:bg-navy-800 transition-all duration-200 font-medium shadow-md hover:shadow-lg text-sm tracking-wide border border-transparent hover:border-gold-500/30">
-                  Subscribe
-                </button>
+                <Link href="/" className="text-gray-600 hover:text-navy-900 font-medium transition-colors">Home</Link>
+
+
+                <a href="#" className="text-gray-600 hover:text-navy-900 font-medium transition-colors">Manifesto</a>
+                <a href="#" className="text-gray-600 hover:text-navy-900 font-medium transition-colors">Technology</a>
+                <Link href="/signup" className="px-5 py-2.5 bg-navy-900 text-white font-bold rounded-sm hover:bg-navy-800 transition-all shadow-sm hover:shadow-md text-sm tracking-wide">
+                  Join
+                </Link>
               </div>
 
               {/* Mobile menu button */}
@@ -126,7 +116,7 @@ export default function RootLayout({
                   <li><a href="/politics" className="hover:text-white transition-colors flex items-center"><span className="w-1.5 h-1.5 bg-gold-500 rounded-full mr-2 opacity-0 hover:opacity-100 transition-opacity"></span>Politics</a></li>
                   <li><a href="/business" className="hover:text-white transition-colors flex items-center"><span className="w-1.5 h-1.5 bg-gold-500 rounded-full mr-2 opacity-0 hover:opacity-100 transition-opacity"></span>Business</a></li>
                   <li><a href="/archives" className="hover:text-white transition-colors flex items-center"><span className="w-1.5 h-1.5 bg-gold-500 rounded-full mr-2 opacity-0 hover:opacity-100 transition-opacity"></span>Archives</a></li>
-                  <li><a href="/about" className="hover:text-white transition-colors flex items-center"><span className="w-1.5 h-1.5 bg-gold-500 rounded-full mr-2 opacity-0 hover:opacity-100 transition-opacity"></span>About Us</a></li>
+                  <li><Link href="/admin/sources" className="hover:text-white transition-colors flex items-center"><span className="w-1.5 h-1.5 bg-gold-500 rounded-full mr-2 opacity-0 hover:opacity-100 transition-opacity"></span>Source Control</Link></li>
                 </ul>
               </div>
 
@@ -149,7 +139,7 @@ export default function RootLayout({
             </div>
           </div>
         </footer>
-      </body>
-    </html>
+      </body >
+    </html >
   )
 }
