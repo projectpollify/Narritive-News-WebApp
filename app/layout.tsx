@@ -31,7 +31,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={`scroll-smooth ${playfair.variable} ${sourceSans.variable} ${inter.variable}`}>
+    <html lang="en" className={`scroll-smooth ${playfair.variable} ${sourceSans.variable} ${inter.variable}`} suppressHydrationWarning>
       <head>
         {/* Google AdSense - Enable when ready */}
         {/* <AdSenseScript /> */}
@@ -60,6 +60,7 @@ export default function RootLayout({
                 <Link href="/" className="text-gray-600 hover:text-navy-900 font-medium transition-colors">Home</Link>
 
 
+                <Link href="/podcast" className="text-gray-600 hover:text-navy-900 font-medium transition-colors">Podcast</Link>
                 <a href="#" className="text-gray-600 hover:text-navy-900 font-medium transition-colors">Manifesto</a>
                 <a href="#" className="text-gray-600 hover:text-navy-900 font-medium transition-colors">Technology</a>
                 <Link href="/signup" className="px-5 py-2.5 bg-navy-900 text-white font-bold rounded-sm hover:bg-navy-800 transition-all shadow-sm hover:shadow-md text-sm tracking-wide">
@@ -139,7 +140,7 @@ export default function RootLayout({
             </div>
           </div>
         </footer>
-      </body >
-    </html >
+      </body>
+    </html>
   )
 }
