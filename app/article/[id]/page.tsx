@@ -151,7 +151,7 @@ Ultimately, this story illustrates the profound fracture in public trust. One ha
       headline: 'Hegseth Slams "Fabricated" Hit Piece; Defends Action Against Narco-Terrorists',
       summary: 'Pete Hegseth vehemently denies the allegations, calling them "fake news" and asserting that the operation was a lawful strike against dangerous criminals threatening American security...',
       url: '#',
-      imageUrl: '/images/hegseth-right.png',
+      imageUrl: '/images/hegseth_right_v2.png',
       author: 'Defense Correspondent',
       fullContent: 'Defense Secretary Pete Hegseth is firing back at what he calls a "disgusting and completely fabricated" smear campaign by The Washington Post, following a report that accused him of ordering unlawful strikes on drug smugglers.\n\nIn a fiery press conference today, Hegseth categorically denied the allegation that he ordered the execution of survivors. "This is fake news, plain and simple," Hegseth declared, flanked by military leadership. "The Washington Post is acting as the propaganda arm for the cartels. They would rather attack our brave men and women in uniform than report the truth about the narco-terrorists threatening our border."\n\nHegseth clarified that the operation in question was a "lawful, kinetic strike" against a high-value target carrying tons of lethal fentanyl bound for American streets. He emphasized that the rules of engagement were followed strictly and that the vessel posed an imminent threat.\n\n"We are in a war," Hegseth stated. "These aren\'t innocent fishermen; these are paramilitary organizations that kill Americans every single day with their poison. We will not apologize for defending this country."\n\nSupporters have rallied around the Secretary, viewing the allegations as the latest attempt by the liberal media and the "Deep State" to undermine the Trump administration\'s tough-on-crime agenda. "They can\'t stand that we are finally taking the fight to the enemy," said a senior administration official. "This is just another hoax designed to weaken our military."'
     },
@@ -414,134 +414,136 @@ export default function ArticlePage({
           </div>
         </section>
 
-        {/* The Perspectives Section */}
-        <section className="mb-20">
-          <h2 className="text-3xl font-serif font-bold text-navy-900 mb-10 text-center">The Perspectives</h2>
+        {/* The Perspectives Section - Hidden for Article 1 */}
+        {article.id !== '1' && (
+          <section className="mb-20">
+            <h2 className="text-3xl font-serif font-bold text-navy-900 mb-10 text-center">The Perspectives</h2>
 
-          <div className="grid md:grid-cols-2 gap-12">
-            {/* Left Source */}
-            <article className="bg-white rounded-sm shadow-card overflow-hidden border-t-4 border-democrat">
-              {article.leftSource.imageUrl && (
-                <div className="relative h-64 w-full">
-                  <Image
-                    src={article.leftSource.imageUrl}
-                    alt={article.leftSource.headline}
-                    fill
-                    className="object-cover"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                  <div className="absolute bottom-4 left-4 text-white">
-                    <span className="bg-democrat px-2 py-1 text-xs font-bold uppercase tracking-widest rounded-sm mb-2 inline-block">
-                      Left Perspective
+            <div className="grid md:grid-cols-2 gap-12">
+              {/* Left Source */}
+              <article className="bg-white rounded-sm shadow-card overflow-hidden border-t-4 border-democrat">
+                {article.leftSource.imageUrl && (
+                  <div className="relative h-64 w-full">
+                    <Image
+                      src={article.leftSource.imageUrl}
+                      alt={article.leftSource.headline}
+                      fill
+                      className="object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                    <div className="absolute bottom-4 left-4 text-white">
+                      <span className="bg-democrat px-2 py-1 text-xs font-bold uppercase tracking-widest rounded-sm mb-2 inline-block">
+                        Left Perspective
+                      </span>
+                    </div>
+                  </div>
+                )}
+
+                <div className="p-8">
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="text-democrat font-bold uppercase tracking-wider text-sm">
+                      {article.leftSource.outlet}
                     </span>
+                    {article.leftSource.author && (
+                      <span className="text-gray-400 text-sm italic">by {article.leftSource.author}</span>
+                    )}
+                  </div>
+
+                  <h3 className="text-2xl font-serif font-bold text-navy-900 mb-6 leading-tight">
+                    {article.leftSource.headline}
+                  </h3>
+
+                  <div className="prose prose-lg text-gray-600">
+                    {article.leftSource.fullContent ? (
+                      article.leftSource.fullContent.split('\n\n').map((paragraph, idx) => (
+                        <p key={idx} className="mb-4 leading-relaxed">
+                          {paragraph}
+                        </p>
+                      ))
+                    ) : (
+                      <p>{article.leftSource.summary}</p>
+                    )}
+                  </div>
+
+                  <div className="mt-8 pt-6 border-t border-gray-100">
+                    <a
+                      href={article.leftSource.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-democrat hover:text-navy-900 font-bold text-sm uppercase tracking-wide flex items-center group"
+                    >
+                      Read Original Article
+                      <svg className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                      </svg>
+                    </a>
                   </div>
                 </div>
-              )}
+              </article>
 
-              <div className="p-8">
-                <div className="flex items-center justify-between mb-4">
-                  <span className="text-democrat font-bold uppercase tracking-wider text-sm">
-                    {article.leftSource.outlet}
-                  </span>
-                  {article.leftSource.author && (
-                    <span className="text-gray-400 text-sm italic">by {article.leftSource.author}</span>
-                  )}
-                </div>
+              {/* Right Source */}
+              <article className="bg-white rounded-sm shadow-card overflow-hidden border-t-4 border-republican">
+                {article.rightSource.imageUrl && (
+                  <div className="relative h-64 w-full">
+                    <Image
+                      src={article.rightSource.imageUrl}
+                      alt={article.rightSource.headline}
+                      fill
+                      className="object-cover object-top"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                    <div className="absolute bottom-4 left-4 text-white">
+                      <span className="bg-republican px-2 py-1 text-xs font-bold uppercase tracking-widest rounded-sm mb-2 inline-block">
+                        Right Perspective
+                      </span>
+                    </div>
+                  </div>
+                )}
 
-                <h3 className="text-2xl font-serif font-bold text-navy-900 mb-6 leading-tight">
-                  {article.leftSource.headline}
-                </h3>
-
-                <div className="prose prose-lg text-gray-600">
-                  {article.leftSource.fullContent ? (
-                    article.leftSource.fullContent.split('\n\n').map((paragraph, idx) => (
-                      <p key={idx} className="mb-4 leading-relaxed">
-                        {paragraph}
-                      </p>
-                    ))
-                  ) : (
-                    <p>{article.leftSource.summary}</p>
-                  )}
-                </div>
-
-                <div className="mt-8 pt-6 border-t border-gray-100">
-                  <a
-                    href={article.leftSource.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-democrat hover:text-navy-900 font-bold text-sm uppercase tracking-wide flex items-center group"
-                  >
-                    Read Original Article
-                    <svg className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                    </svg>
-                  </a>
-                </div>
-              </div>
-            </article>
-
-            {/* Right Source */}
-            <article className="bg-white rounded-sm shadow-card overflow-hidden border-t-4 border-republican">
-              {article.rightSource.imageUrl && (
-                <div className="relative h-64 w-full">
-                  <Image
-                    src={article.rightSource.imageUrl}
-                    alt={article.rightSource.headline}
-                    fill
-                    className="object-cover"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                  <div className="absolute bottom-4 left-4 text-white">
-                    <span className="bg-republican px-2 py-1 text-xs font-bold uppercase tracking-widest rounded-sm mb-2 inline-block">
-                      Right Perspective
+                <div className="p-8">
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="text-republican font-bold uppercase tracking-wider text-sm">
+                      {article.rightSource.outlet}
                     </span>
+                    {article.rightSource.author && (
+                      <span className="text-gray-400 text-sm italic">by {article.rightSource.author}</span>
+                    )}
+                  </div>
+
+                  <h3 className="text-2xl font-serif font-bold text-navy-900 mb-6 leading-tight">
+                    {article.rightSource.headline}
+                  </h3>
+
+                  <div className="prose prose-lg text-gray-600">
+                    {article.rightSource.fullContent ? (
+                      article.rightSource.fullContent.split('\n\n').map((paragraph, idx) => (
+                        <p key={idx} className="mb-4 leading-relaxed">
+                          {paragraph}
+                        </p>
+                      ))
+                    ) : (
+                      <p>{article.rightSource.summary}</p>
+                    )}
+                  </div>
+
+                  <div className="mt-8 pt-6 border-t border-gray-100">
+                    <a
+                      href={article.rightSource.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-republican hover:text-navy-900 font-bold text-sm uppercase tracking-wide flex items-center group"
+                    >
+                      Read Original Article
+                      <svg className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                      </svg>
+                    </a>
                   </div>
                 </div>
-              )}
-
-              <div className="p-8">
-                <div className="flex items-center justify-between mb-4">
-                  <span className="text-republican font-bold uppercase tracking-wider text-sm">
-                    {article.rightSource.outlet}
-                  </span>
-                  {article.rightSource.author && (
-                    <span className="text-gray-400 text-sm italic">by {article.rightSource.author}</span>
-                  )}
-                </div>
-
-                <h3 className="text-2xl font-serif font-bold text-navy-900 mb-6 leading-tight">
-                  {article.rightSource.headline}
-                </h3>
-
-                <div className="prose prose-lg text-gray-600">
-                  {article.rightSource.fullContent ? (
-                    article.rightSource.fullContent.split('\n\n').map((paragraph, idx) => (
-                      <p key={idx} className="mb-4 leading-relaxed">
-                        {paragraph}
-                      </p>
-                    ))
-                  ) : (
-                    <p>{article.rightSource.summary}</p>
-                  )}
-                </div>
-
-                <div className="mt-8 pt-6 border-t border-gray-100">
-                  <a
-                    href={article.rightSource.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-republican hover:text-navy-900 font-bold text-sm uppercase tracking-wide flex items-center group"
-                  >
-                    Read Original Article
-                    <svg className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                    </svg>
-                  </a>
-                </div>
-              </div>
-            </article>
-          </div>
-        </section>
+              </article>
+            </div>
+          </section>
+        )}
 
         {/* The Bigger Picture Section - Moved here */}
         {typeof article.aiAnalysis !== 'string' && article.aiAnalysis.biggerPicture && (

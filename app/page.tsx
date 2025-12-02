@@ -46,7 +46,7 @@ const mockArticles = [
       headline: 'Hegseth Slams "Fabricated" Hit Piece; Defends Action Against Narco-Terrorists',
       summary: 'Pete Hegseth vehemently denies the allegations, calling them "fake news" and asserting that the operation was a lawful strike against dangerous criminals threatening American security...',
       url: '#',
-      imageUrl: '/images/hegseth-right.png',
+      imageUrl: '/images/hegseth_right_v2.png',
       author: 'Defense Correspondent'
     },
     publishedAt: '2025-12-01T08:00:00Z',
@@ -124,20 +124,22 @@ export default function Homepage() {
 
             <div className="flex-1 flex flex-col justify-between space-y-6">
               {mockArticles.map((article, index) => (
-                <div key={article.id} className="group cursor-pointer">
-                  <div className="flex space-x-4">
-                    <span className="text-4xl font-serif font-bold text-gray-200 group-hover:text-gold-500 transition-colors">0{index + 1}</span>
-                    <div>
-                      <span className="text-xs font-bold text-gold-600 uppercase tracking-wider">{article.category}</span>
-                      <h4 className="font-serif font-bold text-lg text-navy-900 group-hover:text-gold-600 transition-colors leading-snug mt-1">
-                        {article.title}
-                      </h4>
-                      <p className="text-sm text-gray-500 mt-2 line-clamp-2">
-                        {article.aiAnalysis}
-                      </p>
+                <Link key={article.id} href={`/article/${article.id}`}>
+                  <div className="group cursor-pointer">
+                    <div className="flex space-x-4">
+                      <span className="text-4xl font-serif font-bold text-gray-200 group-hover:text-gold-500 transition-colors">0{index + 1}</span>
+                      <div>
+                        <span className="text-xs font-bold text-gold-600 uppercase tracking-wider">{article.category}</span>
+                        <h4 className="font-serif font-bold text-lg text-navy-900 group-hover:text-gold-600 transition-colors leading-snug mt-1">
+                          {article.title}
+                        </h4>
+                        <p className="text-sm text-gray-500 mt-2 line-clamp-2">
+                          {article.aiAnalysis}
+                        </p>
+                      </div>
                     </div>
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
           </div>
