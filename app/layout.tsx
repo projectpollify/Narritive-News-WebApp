@@ -26,8 +26,6 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Narrative News - Unbiased Perspectives',
     description: 'AI-powered analysis of news stories from multiple perspectives',
-    type: 'website',
-    locale: 'en_US',
   }
 }
 
